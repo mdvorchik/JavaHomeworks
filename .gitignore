@@ -1,3 +1,14 @@
+#IDEA
+.idea/
+*.iml
+out/
+build/
+build.properties
+junit*.properties
+IgnoreLexer.java~
+.gradle
+.DS_Store
+
 # Compiled class file
 *.class
 
