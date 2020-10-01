@@ -3,7 +3,6 @@ public class Customer {
     private final String lastName;
     private Account account;
 
-
     public Customer(String name, String lastName) {
         if (name == null || lastName == null) {
             throw new IllegalArgumentException("name or lastName can't be empty");
@@ -21,14 +20,12 @@ public class Customer {
      */
     public boolean openAccount(long accountId) {
         boolean successOperation = false;
-
         if (account == null) {
             account = new Account(accountId);
             successOperation = true;
         } else {
             System.out.println("Customer " + fullName() + " already has the active account");
         }
-
         return successOperation;
     }
 
@@ -39,14 +36,12 @@ public class Customer {
      */
     public boolean closeAccount() {
         boolean successOperation = false;
-
         if (account != null) {
             account = null;
             successOperation = true;
         } else {
             System.out.println("Customer " + fullName() + " has no active account to close");
         }
-
         return successOperation;
     }
 
@@ -65,13 +60,11 @@ public class Customer {
      */
     public boolean withdrawFromCurrentAccount(double amount) {
         boolean successOperation = false;
-
         if (account != null) {
             successOperation = account.withdraw(amount);
         } else {
             System.out.println("Customer " + fullName() + " has no active account");
         }
-
         return successOperation;
     }
 
@@ -82,13 +75,11 @@ public class Customer {
      */
     public boolean addMoneyToCurrentAccount(double amount) {
         boolean successOperation = false;
-
         if (account != null) {
             successOperation = account.add(amount);
         } else {
             System.out.println("Customer " + fullName() + " has no active account");
         }
-
         return successOperation;
     }
 }

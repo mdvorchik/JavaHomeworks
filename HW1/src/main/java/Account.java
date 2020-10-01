@@ -9,7 +9,7 @@ public class Account {
         this.id = id;
     }
 
-    public double getBalance(){
+    public double getBalance() {
         return balance;
     }
 
