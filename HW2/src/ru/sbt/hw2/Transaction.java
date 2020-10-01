@@ -8,12 +8,28 @@ public class Transaction {
     private final boolean executed;
     private final boolean rolledBack;
 
+    public Transaction(long id, double amount, Account originator, Account beneficiary) {
+        this.id = id;
+        this.amount = amount;
+        this.originator = originator;
+        this.beneficiary = beneficiary;
+        this.executed = false;
+        this.rolledBack = false;
+    }
+
     /**
      * Adding entries to both accounts
      * @throws IllegalStateException when was already executed
      */
     public Transaction execute() {
-        // write your code here
+        if (executed) throw new IllegalStateException("This transaction was already executed");
+        boolean isOperationOfWithdrawSuccess = originator.withdraw(amount, beneficiary);
+        boolean isOperationOfAddMoneySuccess = beneficiary.add(amount);
+        if (isOperationOfAddMoneySuccess && isOperationOfWithdrawSuccess) {
+            
+        }
+
+
     }
 
     /**

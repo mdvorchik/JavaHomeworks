@@ -1,14 +1,32 @@
 package ru.sbt.hw2;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 public class Account {
     private final long id;
     private final TransactionManager transactionManager;
     private final Entries entries;
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, transactionManager, entries);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Account account = (Account) o;
+        return id == account.id &&
+                Objects.equals(transactionManager, account.transactionManager) &&
+                Objects.equals(entries, account.entries);
+    }
+
     public Account(long id, TransactionManager transactionManager) {
         this.id = id;
         this.transactionManager = transactionManager;
-        this.entries = new Entries(entries);
+        this.entries = new Entries(new ArrayList<>());
     }
 
     /**
@@ -20,7 +38,7 @@ public class Account {
      * otherwise returns false
      */
     public boolean withdraw(double amount, Account beneficiary) {
-        // write your code here
+        //
     }
 
     /**
