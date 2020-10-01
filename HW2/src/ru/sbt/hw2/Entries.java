@@ -58,7 +58,7 @@ public class Entries {
         Collection<Entry> entryCollection;
         int indexOfFirstElementByLocalDate = binSearchByLocalDate(from, 0, entries.size() - 1);
         if (indexOfFirstElementByLocalDate == -1) return new ArrayList<>();
-        int indexOfLastElementByLocalDate = binSearchByLocalDate(to.plusDays(1), 0, entries.size() - 1);
+        int indexOfLastElementByLocalDate = binSearchByLocalDate(to.plusDays(1), indexOfFirstElementByLocalDate, entries.size() - 1);
         if (indexOfLastElementByLocalDate == -1 || indexOfLastElementByLocalDate == 0) return new ArrayList<>();
         entryCollection = copyFromEntriesToArrayByIndexes(indexOfFirstElementByLocalDate, indexOfLastElementByLocalDate);
         return  entryCollection;
@@ -66,5 +66,6 @@ public class Entries {
 
     Entry last() {
         if (entries != null && !entries.isEmpty()) return entries.get(entries.size()-1);
+        return null;
     }
 }
