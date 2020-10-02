@@ -117,6 +117,7 @@ public class Account {
      */
     public double balanceOn(LocalDate date) {
         double balance = 0;
+        if (entries.first() == null) return 0;
         LocalDate dateOfFirstEntry = LocalDate.from(entries.first().getTime());
         ArrayList<Entry> historyBeforeDate = (ArrayList<Entry>) history(dateOfFirstEntry, date);
         for (Entry entry: historyBeforeDate) {

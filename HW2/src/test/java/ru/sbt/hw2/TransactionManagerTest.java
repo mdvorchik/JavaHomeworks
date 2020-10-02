@@ -59,7 +59,9 @@ public class TransactionManagerTest {
         transaction2 = transactions.get(transactions.size() - 1);
         transactionManager.rollbackTransaction(transaction2);
         Assert.assertEquals(3, transactionManager.findAllTransactionsByAccount(account1).size());
+        Assert.assertEquals(3, transactionManager.findAllTransactionsByAccount(account2).size());
         Assert.assertEquals(333, account1.getEntries().last().getAmount(), 0.0001);
+        Assert.assertEquals(-333, account2.getEntries().last().getAmount(), 0.0001);
     }
 
     @Test
@@ -69,6 +71,8 @@ public class TransactionManagerTest {
         ArrayList<Transaction> transactions = (ArrayList<Transaction>) transactionManager.findAllTransactionsByAccount(account1);
         transaction2 = transactions.get(transactions.size() - 1);
         Assert.assertEquals(2, transactionManager.findAllTransactionsByAccount(account1).size());
+        Assert.assertEquals(2, transactionManager.findAllTransactionsByAccount(account2).size());
         Assert.assertEquals(-333, account1.getEntries().last().getAmount(), 0.0001);
+        Assert.assertEquals(333, account2.getEntries().last().getAmount(), 0.0001);
     }
 }
