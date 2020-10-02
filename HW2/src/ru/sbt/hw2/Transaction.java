@@ -10,6 +10,14 @@ public class Transaction {
     private final boolean executed;
     private final boolean rolledBack;
 
+    Account getOriginator() {
+        return originator;
+    }
+
+    Account getBeneficiary() {
+        return beneficiary;
+    }
+
     public Transaction(long id, double amount, Account originator, Account beneficiary, boolean executed, boolean rolledBack) {
         this.id = id;
         this.amount = amount;

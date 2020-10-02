@@ -17,6 +17,14 @@ public class TransactionManager {
         transactionsByAccountMap.get(account).add(transaction);
     }
 
+    private void addTransactionToAllPlaces(Transaction transaction, Account originator, Account beneficiary) {
+        transactions.add(transaction);
+        if (originator != null) addTransactionToAccount(transaction, originator);
+        if (beneficiary != null) addTransactionToAccount(transaction, beneficiary);
+    }
+
+
+
     public TransactionManager(HashMap<Account, ArrayList<Transaction>> transactionsByAccountMap, ArrayList<Transaction> transactions) {
         this.transactionsByAccountMap = transactionsByAccountMap;
         this.transactions = transactions;
@@ -34,9 +42,7 @@ public class TransactionManager {
                                          Account originator,
                                          Account beneficiary) {
         Transaction transaction = new Transaction(transactions.size(), amount, originator, beneficiary, false, false);
-        transactions.add(transaction);
-        addTransactionToAccount(transaction, originator);
-        addTransactionToAccount(transaction, beneficiary);
+        addTransactionToAllPlaces(transaction, originator, beneficiary);
         return transaction;
     }
 
@@ -48,10 +54,12 @@ public class TransactionManager {
 
 
     public void rollbackTransaction(Transaction transaction) {
-        // write your code here
+        Transaction rollbackTransaction = transaction.rollback();
+        addTransactionToAllPlaces(rollbackTransaction, rollbackTransaction.getOriginator(), rollbackTransaction.getBeneficiary());
     }
 
     public void executeTransaction(Transaction transaction) {
-        // write your code here
+        Transaction execTransaction = transaction.execute();
+        addTransactionToAllPlaces(execTransaction, execTransaction.getOriginator(), execTransaction.getBeneficiary());
     }
 }

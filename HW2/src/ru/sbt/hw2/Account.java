@@ -9,7 +9,7 @@ public class Account {
     private final long id;
     private final TransactionManager transactionManager;
 
-    public Entries getEntries() {
+    Entries getEntries() {
         return entries;
     }
 
