@@ -6,6 +6,11 @@ import java.util.Objects;
 public class Account {
     private final long id;
     private final TransactionManager transactionManager;
+
+    public Entries getEntries() {
+        return entries;
+    }
+
     private final Entries entries;
 
     @Override
