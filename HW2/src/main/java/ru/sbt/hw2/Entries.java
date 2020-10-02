@@ -39,9 +39,11 @@ public class Entries {
 
     private int searchFirstIndexFrom(LocalDate key, int indexFrom) {
         int currentIndex = -1;
-        for (int i = indexFrom; i >= entries.size(); --i) {
+        for (int i = indexFrom; i >= 0; --i) {
             if (!key.equals(entries.get(i).getTime().toLocalDate())){
                 return i+1;
+            } else {
+                currentIndex = i;
             }
         }
         return currentIndex;
@@ -52,6 +54,8 @@ public class Entries {
         for (int i = indexFrom; i < entries.size(); ++i) {
             if (!key.equals(entries.get(i).getTime().toLocalDate())){
                 return i - 1;
+            } else {
+                currentIndex = i;
             }
         }
         return currentIndex;
