@@ -56,6 +56,7 @@ public class Transaction {
      * @throws IllegalStateException when was already rolled back
      */
     public Transaction rollback() {
+        if (!executed) throw new IllegalStateException("This transaction was not execut");
         if (rolledBack) throw new IllegalStateException("This transaction was already rolled back");
         Transaction transaction;
         LocalDateTime timeWhenTransactionExecuted = LocalDateTime.now();
@@ -67,7 +68,7 @@ public class Transaction {
             Entry entryBeneficiary = new Entry(beneficiary, this, -amount, timeWhenTransactionExecuted);
             beneficiary.getEntries().addEntry(entryBeneficiary);
         }
-        transaction = new Transaction(this.id, this.amount, this.originator, this.beneficiary, true, false);
+        transaction = new Transaction(this.id, this.amount, this.originator, this.beneficiary, true, true);
         return transaction;
     }
 }
