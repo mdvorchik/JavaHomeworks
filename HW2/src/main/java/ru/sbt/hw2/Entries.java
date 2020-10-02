@@ -79,6 +79,7 @@ public class Entries {
 
     Collection<Entry> from(LocalDate date) {
         Collection<Entry> entryCollection;
+        if (date.compareTo(first().getTime().toLocalDate()) < 0) date = first().getTime().toLocalDate();
         int indexOfFirstElementByLocalDate = binSearchByLocalDate(date, 0, entries.size() - 1, true);
         if (indexOfFirstElementByLocalDate == -1) return new ArrayList<>();
         entryCollection = copyFromEntriesToArrayByIndexes(indexOfFirstElementByLocalDate, entries.size() - 1);
@@ -87,10 +88,12 @@ public class Entries {
 
     Collection<Entry> betweenDates(LocalDate from, LocalDate to) {
         if (from.compareTo(to) > 0) throw new IllegalArgumentException("\"From\" must be less then \"to\"");
+        if (from.compareTo(first().getTime().toLocalDate()) < 0) from = first().getTime().toLocalDate();
+        if (to.compareTo(last().getTime().toLocalDate()) > 0) to = last().getTime().toLocalDate();
         Collection<Entry> entryCollection;
         int indexOfFirstElementByLocalDate = binSearchByLocalDate(from, 0, entries.size() - 1, true);
         if (indexOfFirstElementByLocalDate == -1) return new ArrayList<>();
-        int indexOfLastElementByLocalDate = binSearchByLocalDate(to.plusDays(1), indexOfFirstElementByLocalDate, entries.size() - 1, false);
+        int indexOfLastElementByLocalDate = binSearchByLocalDate(to, indexOfFirstElementByLocalDate, entries.size() - 1, false);
         if (indexOfLastElementByLocalDate == -1 || indexOfLastElementByLocalDate == 0) return new ArrayList<>();
         entryCollection = copyFromEntriesToArrayByIndexes(indexOfFirstElementByLocalDate, indexOfLastElementByLocalDate);
         return  entryCollection;

@@ -27,7 +27,6 @@ public class EntriesTest {
     private LocalDateTime localDateTime3;
     private LocalDateTime localDateTime4;
     private Entries entries1;
-    private Entries entries2;
 
     @Before
     public void setUp() {
@@ -47,9 +46,8 @@ public class EntriesTest {
         entry1 = new Entry(account1, transaction1, transaction1.getAmount(), localDateTime1);
         entry2 = new Entry(account1, transaction2, transaction2.getAmount(), localDateTime2);
         entry3 = new Entry(account1, transaction3, transaction3.getAmount(), localDateTime3);
-        entry4 = new Entry(account2, transaction4, transaction4.getAmount(), localDateTime4);
+        entry4 = new Entry(account1, transaction4, transaction4.getAmount(), localDateTime4);
         entries1 = account1.getEntries();
-        entries2 = account2.getEntries();
     }
 
     @Test
@@ -61,15 +59,42 @@ public class EntriesTest {
     }
 
     @Test
-    public void fromFromLastElement() {
+    public void fromFromRandomTime() {
         entries1.addEntry(entry1);
         entries1.addEntry(entry2);
         entries1.addEntry(entry3);
+        entries1.addEntry(entry4);
         ArrayList<Entry> expectedList = new ArrayList<>();
         expectedList.add(entry3);
-        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.from(localDateTime3.toLocalDate());
+        expectedList.add(entry4);
+        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.from(localDateTime2.plusDays(3).toLocalDate());
         Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
     }
+    @Test
+    public void fromWithNoElement() {
+        entries1.addEntry(entry1);
+        entries1.addEntry(entry2);
+        entries1.addEntry(entry3);
+        entries1.addEntry(entry4);
+        ArrayList<Entry> expectedList = new ArrayList<>();
+        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.from(localDateTime2.plusDays(30).toLocalDate());
+        Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
+    }
+    @Test
+    public void fromAllElements() {
+        entries1.addEntry(entry1);
+        entries1.addEntry(entry2);
+        entries1.addEntry(entry3);
+        entries1.addEntry(entry4);
+        ArrayList<Entry> expectedList = new ArrayList<>();
+        expectedList.add(entry1);
+        expectedList.add(entry2);
+        expectedList.add(entry3);
+        expectedList.add(entry4);
+        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.from(localDateTime1.minusDays(30).toLocalDate());
+        Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
+    }
+
 
     @Test
     public void fromFromFirstElement() {
@@ -83,15 +108,79 @@ public class EntriesTest {
         ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.from(localDateTime1.toLocalDate());
         Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
     }
+
     @Test
-    public void betweenDates() {
+    public void betweenDatesAllEntries() {
+        entries1.addEntry(entry1);
+        entries1.addEntry(entry2);
+        entries1.addEntry(entry3);
+        entries1.addEntry(entry4);
+        ArrayList<Entry> expectedList = new ArrayList<>();
+        expectedList.add(entry1);
+        expectedList.add(entry2);
+        expectedList.add(entry3);
+        expectedList.add(entry4);
+        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.betweenDates(localDateTime1.minusDays(3).toLocalDate(), localDateTime4.plusDays(100).toLocalDate());
+        Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
     }
 
     @Test
+    public void betweenDatesOneEntries() {
+        entries1.addEntry(entry1);
+        entries1.addEntry(entry2);
+        entries1.addEntry(entry3);
+        entries1.addEntry(entry4);
+        ArrayList<Entry> expectedList = new ArrayList<>();
+        expectedList.add(entry3);
+        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.betweenDates(localDateTime2.plusDays(1).toLocalDate(), localDateTime3.plusDays(1).toLocalDate());
+        Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
+    }
+
+    @Test
+    public void betweenDatesSomeEntries() {
+        entries1.addEntry(entry1);
+        entries1.addEntry(entry2);
+        entries1.addEntry(entry3);
+        entries1.addEntry(entry4);
+        ArrayList<Entry> expectedList = new ArrayList<>();
+        expectedList.add(entry1);
+        expectedList.add(entry2);
+        expectedList.add(entry3);
+        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.betweenDates(localDateTime1.toLocalDate(), localDateTime3.plusDays(1).toLocalDate());
+        Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
+    }
+
+    @Test
+    public void betweenWithNoEntries() {
+        entries1.addEntry(entry1);
+        entries1.addEntry(entry2);
+        entries1.addEntry(entry3);
+        entries1.addEntry(entry4);
+        ArrayList<Entry> expectedList = new ArrayList<>();
+        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.betweenDates(localDateTime3.plusDays(1).toLocalDate(), localDateTime4.minusDays(1).toLocalDate());
+        Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
+    }
+    @Test
     public void last() {
+        entries1.addEntry(entry1);
+        Assert.assertEquals(entry1, entries1.last());
+        entries1.addEntry(entry2);
+        Assert.assertEquals(entry2, entries1.last());
+        entries1.addEntry(entry3);
+        Assert.assertEquals(entry3, entries1.last());
+        entries1.addEntry(entry4);
+        Assert.assertEquals(entry4, entries1.last());
     }
 
     @Test
     public void first() {
+        entries1.addEntry(entry1);
+        Assert.assertEquals(entry1, entries1.first());
+        entries1.addEntry(entry2);
+        Assert.assertEquals(entry1, entries1.first());
+        entries1.addEntry(entry3);
+        Assert.assertEquals(entry1, entries1.first());
+        entries1.addEntry(entry4);
+        Assert.assertEquals(entry1, entries1.first());
     }
 }
