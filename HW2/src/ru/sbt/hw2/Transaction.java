@@ -18,6 +18,10 @@ public class Transaction {
         return beneficiary;
     }
 
+    public double getAmount() {
+        return amount;
+    }
+
     public Transaction(long id, double amount, Account originator, Account beneficiary, boolean executed, boolean rolledBack) {
         this.id = id;
         this.amount = amount;

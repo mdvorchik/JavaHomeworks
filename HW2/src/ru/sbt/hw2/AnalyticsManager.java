@@ -1,11 +1,16 @@
 package ru.sbt.hw2;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import javafx.collections.transformation.SortedList;
+
+import java.util.*;
+
+import static java.util.Collections.*;
 
 public class AnalyticsManager {
     private final TransactionManager transactionManager;
+
+    private Comparator<Transaction> transactionComparatorByAmount =
+            (Transaction t1, Transaction t2)->Double.compare(t2.getAmount(), t1.getAmount());
 
     public AnalyticsManager(TransactionManager transactionManager) {
         this.transactionManager = transactionManager;
@@ -36,6 +41,12 @@ public class AnalyticsManager {
     }
 
     public Collection<Transaction> topTenExpensivePurchases(Account account) {
-        // write your code here
+        ArrayList<Transaction> transactionCollection = (ArrayList<Transaction>) transactionManager.findAllTransactionsByAccount(account);
+        transactionCollection.sort(transactionComparatorByAmount);
+        ArrayList<Transaction> topTenExpensivePurchases = new ArrayList<>(10);
+        for (int i = 0; i < 10; ++i) {
+            topTenExpensivePurchases.set(i, transactionCollection.get(i));
+        }
+        return topTenExpensivePurchases;
     }
 }
