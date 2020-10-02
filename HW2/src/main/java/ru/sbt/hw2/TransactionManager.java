@@ -10,11 +10,12 @@ public class TransactionManager {
 
     private void addTransactionToAccount(Transaction transaction, Account account) {
         if (!transactionsByAccountMap.containsKey(account)) {
-            ArrayList<Transaction> transactionArrayList = new ArrayList<>(1);
+            ArrayList<Transaction> transactionArrayList = new ArrayList<>();
             transactionArrayList.add(transaction);
             transactionsByAccountMap.put(account, transactionArrayList);
+        } else {
+            transactionsByAccountMap.get(account).add(transaction);
         }
-        transactionsByAccountMap.get(account).add(transaction);
     }
 
     private void addTransactionToAllPlaces(Transaction transaction, Account originator, Account beneficiary) {
