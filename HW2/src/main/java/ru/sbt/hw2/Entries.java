@@ -14,7 +14,7 @@ public class Entries {
      */
     private ArrayList<Entry> entries;
 
-    private int binSearchByLocalDate(LocalDate key, int lowIndex, int highIndex){
+    private int binSearchByLocalDate(LocalDate key, int lowIndex, int highIndex, boolean isNeedFirstIndex) {
         int currentIndex = -1;
         while (lowIndex <= highIndex) {
             int mid = (lowIndex + highIndex) / 2;
@@ -24,16 +24,43 @@ public class Entries {
                 highIndex = mid - 1;
             } else if (entries.get(mid).getTime().toLocalDate().compareTo(key) == 0) {
                 currentIndex = mid;
+                if (isNeedFirstIndex) {
+                    currentIndex = searchFirstIndexFrom(key, currentIndex);
+                } else {
+                    currentIndex = searchLastIndexFrom(key, currentIndex);
+                }
                 break;
+            }
+        }
+        if (currentIndex == -1 && isNeedFirstIndex) currentIndex = searchFirstIndexFrom(key, highIndex);
+        if (currentIndex == -1 && !isNeedFirstIndex) currentIndex = searchLastIndexFrom(key, lowIndex);
+        return currentIndex;
+    }
+
+    private int searchFirstIndexFrom(LocalDate key, int indexFrom) {
+        int currentIndex = -1;
+        for (int i = indexFrom; i >= entries.size(); --i) {
+            if (!key.equals(entries.get(i).getTime().toLocalDate())){
+                return i+1;
+            }
+        }
+        return currentIndex;
+    }
+
+    private int searchLastIndexFrom(LocalDate key, int indexFrom) {
+        int currentIndex = -1;
+        for (int i = indexFrom; i < entries.size(); ++i) {
+            if (!key.equals(entries.get(i).getTime().toLocalDate())){
+                return i - 1;
             }
         }
         return currentIndex;
     }
 
     private ArrayList<Entry> copyFromEntriesToArrayByIndexes(int lowIndex, int highIndex) {
-        ArrayList<Entry> arrayList = new ArrayList<>(highIndex - lowIndex + 1);
-        for (int i = lowIndex, arrayIndex = 0; i < highIndex; ++i, ++arrayIndex){
-            arrayList.set(arrayIndex, entries.get(i));
+        ArrayList<Entry> arrayList = new ArrayList<>();
+        for (int i = lowIndex, arrayIndex = 0; i <= highIndex; ++i, ++arrayIndex){
+            arrayList.add(entries.get(i));
         }
         return arrayList;
     }
@@ -48,7 +75,7 @@ public class Entries {
 
     Collection<Entry> from(LocalDate date) {
         Collection<Entry> entryCollection;
-        int indexOfFirstElementByLocalDate = binSearchByLocalDate(date, 0, entries.size() - 1);
+        int indexOfFirstElementByLocalDate = binSearchByLocalDate(date, 0, entries.size() - 1, true);
         if (indexOfFirstElementByLocalDate == -1) return new ArrayList<>();
         entryCollection = copyFromEntriesToArrayByIndexes(indexOfFirstElementByLocalDate, entries.size() - 1);
         return  entryCollection;
@@ -57,9 +84,9 @@ public class Entries {
     Collection<Entry> betweenDates(LocalDate from, LocalDate to) {
         if (from.compareTo(to) > 0) throw new IllegalArgumentException("\"From\" must be less then \"to\"");
         Collection<Entry> entryCollection;
-        int indexOfFirstElementByLocalDate = binSearchByLocalDate(from, 0, entries.size() - 1);
+        int indexOfFirstElementByLocalDate = binSearchByLocalDate(from, 0, entries.size() - 1, true);
         if (indexOfFirstElementByLocalDate == -1) return new ArrayList<>();
-        int indexOfLastElementByLocalDate = binSearchByLocalDate(to.plusDays(1), indexOfFirstElementByLocalDate, entries.size() - 1);
+        int indexOfLastElementByLocalDate = binSearchByLocalDate(to.plusDays(1), indexOfFirstElementByLocalDate, entries.size() - 1, false);
         if (indexOfLastElementByLocalDate == -1 || indexOfLastElementByLocalDate == 0) return new ArrayList<>();
         entryCollection = copyFromEntriesToArrayByIndexes(indexOfFirstElementByLocalDate, indexOfLastElementByLocalDate);
         return  entryCollection;
