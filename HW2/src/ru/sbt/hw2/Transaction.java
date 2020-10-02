@@ -25,17 +25,17 @@ public class Transaction {
      */
     public Transaction execute() {
         if (executed) throw new IllegalStateException("This transaction was already executed");
-        Transaction transaction = this;
-        boolean isOperationOfWithdrawSuccess = originator.withdraw(amount, beneficiary);
-        boolean isOperationOfAddMoneySuccess = beneficiary.add(amount);
-        if (isOperationOfAddMoneySuccess && isOperationOfWithdrawSuccess) {
-            LocalDateTime timeWhenTransactionExecuted = LocalDateTime.now();
+        Transaction transaction;
+        LocalDateTime timeWhenTransactionExecuted = LocalDateTime.now();
+        if (originator != null) {
             Entry entryOriginator = new Entry(originator, this, -amount, timeWhenTransactionExecuted);
-            Entry entryBeneficiary = new Entry(beneficiary, this, amount, timeWhenTransactionExecuted);
             originator.getEntries().addEntry(entryOriginator);
-            beneficiary.getEntries().addEntry(entryBeneficiary);
-            transaction = new Transaction(this.id, this.amount, this.originator, this.beneficiary, true, false);
         }
+        if (beneficiary != null) {
+            Entry entryBeneficiary = new Entry(beneficiary, this, amount, timeWhenTransactionExecuted);
+            beneficiary.getEntries().addEntry(entryBeneficiary);
+        }
+        transaction = new Transaction(this.id, this.amount, this.originator, this.beneficiary, true, false);
         return transaction;
     }
 
@@ -45,17 +45,17 @@ public class Transaction {
      */
     public Transaction rollback() {
         if (rolledBack) throw new IllegalStateException("This transaction was already rolled back");
-        Transaction transaction = this;
-        boolean isOperationOfWithdrawSuccess = beneficiary.withdraw(amount, originator);
-        boolean isOperationOfAddMoneySuccess = originator.add(amount);
-        if (isOperationOfAddMoneySuccess && isOperationOfWithdrawSuccess) {
-            LocalDateTime timeWhenTransactionExecuted = LocalDateTime.now();
+        Transaction transaction;
+        LocalDateTime timeWhenTransactionExecuted = LocalDateTime.now();
+        if (originator != null) {
             Entry entryOriginator = new Entry(originator, this, amount, timeWhenTransactionExecuted);
-            Entry entryBeneficiary = new Entry(beneficiary, this, -amount, timeWhenTransactionExecuted);
             originator.getEntries().addEntry(entryOriginator);
-            beneficiary.getEntries().addEntry(entryBeneficiary);
-            transaction = new Transaction(this.id, this.amount, this.originator, this.beneficiary, true, false);
         }
+        if (beneficiary != null) {
+            Entry entryBeneficiary = new Entry(beneficiary, this, -amount, timeWhenTransactionExecuted);
+            beneficiary.getEntries().addEntry(entryBeneficiary);
+        }
+        transaction = new Transaction(this.id, this.amount, this.originator, this.beneficiary, true, false);
         return transaction;
     }
 }

@@ -55,6 +55,7 @@ public class Entries {
     }
 
     Collection<Entry> betweenDates(LocalDate from, LocalDate to) {
+        if (from.compareTo(to) > 0) throw new IllegalArgumentException("\"From\" must be less then \"to\"");
         Collection<Entry> entryCollection;
         int indexOfFirstElementByLocalDate = binSearchByLocalDate(from, 0, entries.size() - 1);
         if (indexOfFirstElementByLocalDate == -1) return new ArrayList<>();
@@ -66,6 +67,11 @@ public class Entries {
 
     Entry last() {
         if (entries != null && !entries.isEmpty()) return entries.get(entries.size()-1);
+        return null;
+    }
+
+    Entry first() {
+        if (entries != null && !entries.isEmpty()) return entries.get(0);
         return null;
     }
 }

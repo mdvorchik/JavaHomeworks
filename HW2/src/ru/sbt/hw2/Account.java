@@ -1,6 +1,8 @@
 package ru.sbt.hw2;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 
 public class Account {
@@ -43,7 +45,14 @@ public class Account {
      * otherwise returns false
      */
     public boolean withdraw(double amount, Account beneficiary) {
-        //
+        boolean isOperationSuccess = false;
+        LocalDate localDate = LocalDate.now();
+        if (amount > 0 && this.balanceOn(localDate) - amount >= 0) {
+            Transaction transaction = transactionManager.createTransaction(amount, this, beneficiary);
+            transactionManager.executeTransaction(transaction);
+            isOperationSuccess = true;
+        }
+        return isOperationSuccess;
     }
 
     /**
@@ -55,7 +64,8 @@ public class Account {
      * otherwise returns false
      */
     public boolean withdrawCash(double amount) {
-        // write your code here
+        boolean isOperationSuccess = withdraw(amount, null);
+        return isOperationSuccess;
     }
 
     /**
@@ -67,7 +77,13 @@ public class Account {
      * otherwise returns false
      */
     public boolean addCash(double amount) {
-        // write your code here
+        boolean isOperationSuccess = false;
+        if (amount > 0) {
+            Transaction transaction = transactionManager.createTransaction(amount, null, this);
+            transactionManager.executeTransaction(transaction);
+            isOperationSuccess = true;
+        }
+        return isOperationSuccess;
     }
 
     /**
@@ -79,14 +95,19 @@ public class Account {
      * otherwise returns false
      */
     public boolean add(double amount) {
-        // write your code here
+        boolean isOperationSuccess = false;
+        if (amount > 0) {
+            Transaction transaction = transactionManager.createTransaction(-amount, this, null);
+            transactionManager.executeTransaction(transaction);
+            isOperationSuccess = true;
+        }
+        return isOperationSuccess;
     }
 
-
-
-
     public Collection<Entry> history(LocalDate from, LocalDate to) {
-        // write your code here
+        if (from.compareTo(to) > 0) throw new IllegalArgumentException("\"From\" must be less then \"to\"");
+        Collection<Entry> historyOfEntry = entries.betweenDates(from, to);
+        return historyOfEntry;
     }
 
     /**
@@ -95,14 +116,22 @@ public class Account {
      * @return balance
      */
     public double balanceOn(LocalDate date) {
-        // write your code here
+        double balance = 0;
+        LocalDate dateOfFirstEntry = LocalDate.from(entries.first().getTime());
+        ArrayList<Entry> historyBeforeDate = (ArrayList<Entry>) history(dateOfFirstEntry, date);
+        for (Entry entry: historyBeforeDate) {
+            balance += entry.getAmount();
+        }
+        return balance;
     }
 
     /**
      * Finds the last transaction of the account and rollbacks it
      */
     public void rollbackLastTransaction() {
-        // write your code here
+         ArrayList<Transaction> transactionArrayList = (ArrayList<Transaction>) transactionManager.findAllTransactionsByAccount(this);
+         Transaction lastTransaction = transactionArrayList.get(transactionArrayList.size()-1);
+         transactionManager.rollbackTransaction(lastTransaction);
     }
 }
     

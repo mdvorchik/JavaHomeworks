@@ -22,5 +22,9 @@ public class Entry {
     public LocalDateTime getTime() {
         return time;
     }
+
+    public double getAmount() {
+        return amount;
+    }
 }
 

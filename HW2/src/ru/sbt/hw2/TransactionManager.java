@@ -33,7 +33,6 @@ public class TransactionManager {
     public Transaction createTransaction(double amount,
                                          Account originator,
                                          Account beneficiary) {
-        if (originator == null || beneficiary == null) throw new IllegalArgumentException("originator and beneficiary must not be null");
         Transaction transaction = new Transaction(transactions.size(), amount, originator, beneficiary, false, false);
         transactions.add(transaction);
         addTransactionToAccount(transaction, originator);
