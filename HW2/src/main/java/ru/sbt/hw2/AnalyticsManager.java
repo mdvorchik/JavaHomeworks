@@ -43,9 +43,9 @@ public class AnalyticsManager {
     public Collection<Transaction> topTenExpensivePurchases(Account account) {
         ArrayList<Transaction> transactionCollection = (ArrayList<Transaction>) transactionManager.findAllTransactionsByAccount(account);
         transactionCollection.sort(transactionComparatorByAmount);
-        ArrayList<Transaction> topTenExpensivePurchases = new ArrayList<>(10);
+        ArrayList<Transaction> topTenExpensivePurchases = new ArrayList<>();
         for (int i = 0; i < 10; ++i) {
-            topTenExpensivePurchases.set(i, transactionCollection.get(i));
+            topTenExpensivePurchases.add(i, transactionCollection.get(i));
         }
         return topTenExpensivePurchases;
     }
