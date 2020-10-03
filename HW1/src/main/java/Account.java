@@ -22,12 +22,11 @@ public class Account {
      * otherwise returns false
      */
     public boolean withdraw(double amount) {
-        boolean successOperation = false;
         if (amount > 0 && balance - amount >= 0) {
             balance -= amount;
-            successOperation = true;
+            return true;
         }
-        return successOperation;
+        return false;
     }
 
     /**
@@ -37,11 +36,10 @@ public class Account {
      * @return true if amount &gt 0, otherwise returns false
      */
     public boolean add(double amount) {
-        boolean successOperation = false;
         if (amount > 0) {
             balance += amount;
-            successOperation = true;
+            return true;
         }
-        return successOperation;
+        return false;
     }
 }
