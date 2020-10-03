@@ -13,10 +13,6 @@ import static org.junit.Assert.*;
 public class AccountTest {
 
     private TransactionManager transactionManager;
-    private Transaction transaction1;
-    private Transaction transaction2;
-    private Transaction transaction3;
-    private Transaction transaction4;
     private Account account1;
     private Account account2;
 
@@ -36,24 +32,17 @@ public class AccountTest {
         Assert.assertEquals(false, isSuccessOperation);
     }
 
-    //Почему-то не проходит, если add один
-//    @Test
-//    public void withdrawWhenPositiveBalance() {
-//        account1.addCash(1000);
-//        boolean isSuccessOperation = account1.withdraw(900, account2);
-//        Assert.assertEquals(true, isSuccessOperation);
-//    }
-
     @Test
     public void withdrawWhenPositiveBalance() {
         account1.addCash(1000);
-        account1.addCash(1000);
-        boolean isSuccessOperation = account1.withdraw(1500, account2);
-        Assert.assertEquals(1500, account2.getEntries().last().getAmount(), 0.0001);
+        boolean isSuccessOperation = account1.withdraw(700, account2);
         Assert.assertEquals(true, isSuccessOperation);
-        isSuccessOperation = account1.withdraw(500, account2);
-        Assert.assertEquals(500, account2.getEntries().last().getAmount(), 0.0001);
+        Assert.assertEquals(300, account1.balanceOn(LocalDate.now()), 0.0001); //300 = 1000 - 700
+        Assert.assertEquals(700, account2.balanceOn(LocalDate.now()), 0.0001); //700 = 0 + 700
+        isSuccessOperation = account2.withdraw(100, account1);
         Assert.assertEquals(true, isSuccessOperation);
+        Assert.assertEquals(400, account1.balanceOn(LocalDate.now()), 0.0001); //400 = 300 + 100
+        Assert.assertEquals(600, account2.balanceOn(LocalDate.now()), 0.0001); //600 = 700 - 100
     }
 
     @Test
@@ -64,12 +53,13 @@ public class AccountTest {
 
     @Test
     public void withdrawCashWhenPositiveBalance() {
-        account1.addCash(1000);
-        account1.addCash(1000);
+        account1.addCash(2000);
         boolean isSuccessOperation = account1.withdrawCash(1500);
         Assert.assertEquals(true, isSuccessOperation);
+        Assert.assertEquals(500, account1.balanceOn(LocalDate.now()), 0.0001); //500 = 2000 - 1500
         isSuccessOperation = account1.withdrawCash(500);
         Assert.assertEquals(true, isSuccessOperation);
+        Assert.assertEquals(0, account1.balanceOn(LocalDate.now()), 0.0001);   //0 = 500 - 500
     }
 
     @Test
@@ -95,28 +85,27 @@ public class AccountTest {
 
     @Test
     public void balanceOn() {
-        account1.addCash(1000);
-        account1.addCash(1000);
+        account1.addCash(2000);
         Assert.assertEquals(2000, account1.balanceOn(LocalDate.now()), 0.0001);
         account1.addCash(500);
-        Assert.assertEquals(2500, account1.balanceOn(LocalDate.now()), 0.0001);
+        Assert.assertEquals(2500, account1.balanceOn(LocalDate.now()), 0.0001); //2500 = 2000 + 500
         account1.withdraw(500, account2);
-        Assert.assertEquals(2000, account1.balanceOn(LocalDate.now()), 0.0001);
+        Assert.assertEquals(2000, account1.balanceOn(LocalDate.now()), 0.0001); //2000 = 2500 - 500
+        Assert.assertEquals(500, account2.balanceOn(LocalDate.now()), 0.0001);  //500 = 0 + 500
         account1.withdraw(500, account2);
-        Assert.assertEquals(1500, account1.balanceOn(LocalDate.now()), 0.0001);
-        Assert.assertEquals(1000, account2.balanceOn(LocalDate.now()), 0.0001);
+        Assert.assertEquals(1500, account1.balanceOn(LocalDate.now()), 0.0001); //1500 = 2000 - 500
+        Assert.assertEquals(1000, account2.balanceOn(LocalDate.now()), 0.0001); //1000 = 500 + 500
     }
 
     @Test
     public void rollbackLastTransaction() {
-        account1.addCash(1000);
-        account1.addCash(1000);
-        account1.withdraw(500, account2);
-        account1.withdraw(500, account2);
-        Assert.assertEquals(1000, account1.balanceOn(LocalDate.now()), 0.0001);
-        Assert.assertEquals(1000, account2.balanceOn(LocalDate.now()), 0.0001);
+        account1.addCash(2000);
+        account1.withdraw(700, account2);
+        account1.withdraw(300, account2);
+        Assert.assertEquals(1000, account1.balanceOn(LocalDate.now()), 0.0001); //1000 = 2000 - 700 - 300
+        Assert.assertEquals(1000, account2.balanceOn(LocalDate.now()), 0.0001); //1000 = 700 + 300
         account1.rollbackLastTransaction();
-        Assert.assertEquals(1500, account1.balanceOn(LocalDate.now()), 0.0001);
-        Assert.assertEquals(500, account2.balanceOn(LocalDate.now()), 0.0001);
+        Assert.assertEquals(1300, account1.balanceOn(LocalDate.now()), 0.0001); //1300 = 1000 - (-300)
+        Assert.assertEquals(700, account2.balanceOn(LocalDate.now()), 0.0001);  //700 = 1000 - (+300)
     }
 }

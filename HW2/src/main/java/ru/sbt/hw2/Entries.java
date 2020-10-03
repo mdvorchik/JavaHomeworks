@@ -94,7 +94,7 @@ public class Entries {
         int indexOfFirstElementByLocalDate = binSearchByLocalDate(from, 0, entries.size() - 1, true);
         if (indexOfFirstElementByLocalDate == -1) return new ArrayList<>();
         int indexOfLastElementByLocalDate = binSearchByLocalDate(to, indexOfFirstElementByLocalDate, entries.size() - 1, false);
-        if (indexOfLastElementByLocalDate == -1 || indexOfLastElementByLocalDate == 0) return new ArrayList<>();
+        if (indexOfLastElementByLocalDate == -1 || indexOfLastElementByLocalDate == -1) return new ArrayList<>();
         entryCollection = copyFromEntriesToArrayByIndexes(indexOfFirstElementByLocalDate, indexOfLastElementByLocalDate);
         return  entryCollection;
     }
