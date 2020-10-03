@@ -1,9 +1,11 @@
+package ru.sbt.mipt.homework.hw1;
+
 public class Account {
     private final long id;
     private double balance;
 
     public Account(long id) {
-        if (id < 0){
+        if (id < 0) {
             throw new IllegalArgumentException("id can't be &lt 0");
         }
         this.id = id;
