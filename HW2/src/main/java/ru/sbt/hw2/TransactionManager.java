@@ -24,13 +24,10 @@ public class TransactionManager {
         if (beneficiary != null) addTransactionToAccount(transaction, beneficiary);
     }
 
-
-
     public TransactionManager(HashMap<Account, ArrayList<Transaction>> transactionsByAccountMap, ArrayList<Transaction> transactions) {
         this.transactionsByAccountMap = transactionsByAccountMap;
         this.transactions = transactions;
     }
-
 
     /**
      * Creates and stores transactions
@@ -52,7 +49,6 @@ public class TransactionManager {
         ArrayList<Transaction> transactionsByAccount = transactionsByAccountMap.get(account);
         return transactionsByAccount;
     }
-
 
     public void rollbackTransaction(Transaction transaction) {
         Transaction rollbackTransaction = transaction.rollback();

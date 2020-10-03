@@ -11,6 +11,7 @@ import java.util.HashMap;
 import static org.junit.Assert.*;
 
 public class EntriesTest {
+
     private TransactionManager transactionManager;
     private Transaction transaction1;
     private Transaction transaction2;
@@ -70,6 +71,7 @@ public class EntriesTest {
         ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.from(localDateTime2.plusDays(3).toLocalDate());
         Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
     }
+
     @Test
     public void fromWithNoElement() {
         entries1.addEntry(entry1);
@@ -80,6 +82,7 @@ public class EntriesTest {
         ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.from(localDateTime2.plusDays(30).toLocalDate());
         Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
     }
+
     @Test
     public void fromAllElements() {
         entries1.addEntry(entry1);
@@ -94,7 +97,6 @@ public class EntriesTest {
         ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.from(localDateTime1.minusDays(30).toLocalDate());
         Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
     }
-
 
     @Test
     public void fromFromFirstElement() {
@@ -160,6 +162,7 @@ public class EntriesTest {
         ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.betweenDates(localDateTime3.plusDays(1).toLocalDate(), localDateTime4.minusDays(1).toLocalDate());
         Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
     }
+
     @Test
     public void last() {
         entries1.addEntry(entry1);

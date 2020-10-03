@@ -4,11 +4,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import static org.junit.Assert.*;
 
 public class TransactionTest {
 
@@ -16,7 +13,6 @@ public class TransactionTest {
     private Transaction transaction1;
     private Transaction transaction2;
     private Transaction transaction3;
-    private Transaction transaction4;
     private Account account1;
     private Account account2;
 
@@ -30,7 +26,6 @@ public class TransactionTest {
         transaction1 = transactionManager.createTransaction(333, account1, account2);
         transaction2 = transactionManager.createTransaction(-777, account1, account2);
         transaction3 = transactionManager.createTransaction(-222, account1, account2);
-        transaction4 = transactionManager.createTransaction(888, account2, account1);
 
     }
 
@@ -51,8 +46,9 @@ public class TransactionTest {
     public void rollbackWithExceptionTooManyRollback() {
         transaction2 = transaction1.execute();
         transaction3 = transaction2.rollback();
-        transaction4 = transaction3.rollback();
+        transaction3.rollback();
     }
+
     @Test (expected = IllegalStateException.class)
     public void rollbackWithExceptionTransactionDoesNotExecutedYet() {
         transaction1.rollback();

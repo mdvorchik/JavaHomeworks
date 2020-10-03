@@ -8,12 +8,11 @@ import java.util.Objects;
 public class Account {
     private final long id;
     private final TransactionManager transactionManager;
+    private final Entries entries;
 
     Entries getEntries() {
         return entries;
     }
-
-    private final Entries entries;
 
     @Override
     public int hashCode() {

@@ -7,15 +7,11 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
-
 public class TransactionManagerTest {
 
     private TransactionManager transactionManager;
     private Transaction transaction1;
     private Transaction transaction2;
-    private Transaction transaction3;
-    private Transaction transaction4;
     private Account account1;
     private Account account2;
 

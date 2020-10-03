@@ -1,14 +1,9 @@
 package ru.sbt.hw2;
 
-import javafx.collections.transformation.SortedList;
-
 import java.util.*;
-
-import static java.util.Collections.*;
 
 public class AnalyticsManager {
     private final TransactionManager transactionManager;
-
     private Comparator<Transaction> transactionComparatorByAmount =
             (Transaction t1, Transaction t2)->Double.compare(t2.getAmount(), t1.getAmount());
 

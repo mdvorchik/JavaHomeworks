@@ -8,8 +8,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
-
 public class AccountTest {
 
     private TransactionManager transactionManager;

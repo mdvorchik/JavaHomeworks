@@ -4,12 +4,9 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-
-import static org.junit.Assert.*;
 
 public class AnalyticsManagerTest {
 
@@ -21,7 +18,6 @@ public class AnalyticsManagerTest {
     private Account account2;
     private Account account3;
     private Account account4;
-
     private Comparator<Transaction> transactionComparatorByAmount =
             (Transaction t1, Transaction t2)->Double.compare(t2.getAmount(), t1.getAmount());
 
