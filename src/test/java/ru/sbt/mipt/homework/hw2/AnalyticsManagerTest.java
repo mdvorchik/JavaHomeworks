@@ -1,4 +1,4 @@
-package ru.sbt.hw2;
+package ru.sbt.mipt.homework.hw2;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -18,8 +18,8 @@ public class AnalyticsManagerTest {
     private Account account2;
     private Account account3;
     private Account account4;
-    private Comparator<Transaction> transactionComparatorByAmount =
-            (Transaction t1, Transaction t2)->Double.compare(t2.getAmount(), t1.getAmount());
+    private final Comparator<Transaction> transactionComparatorByAmount =
+            (Transaction t1, Transaction t2) -> Double.compare(t2.getAmount(), t1.getAmount());
 
     @Before
     public void setUp() {

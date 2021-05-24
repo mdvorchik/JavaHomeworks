@@ -1,4 +1,4 @@
-package ru.sbt.hw2;
+package ru.sbt.mipt.homework.hw2;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class EntriesTest {
 

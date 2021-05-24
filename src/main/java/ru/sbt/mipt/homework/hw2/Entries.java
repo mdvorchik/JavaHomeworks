@@ -1,4 +1,4 @@
-package ru.sbt.hw2;
+package ru.sbt.mipt.homework.hw2;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ public class Entries {
     /**
      * entries must be sorted by LocalDateTime
      */
-    private ArrayList<Entry> entries;
+    private final ArrayList<Entry> entries;
 
     private int binSearchByLocalDate(LocalDate key, int lowIndex, int highIndex, boolean isNeedFirstIndex) {
         int currentIndex = -1;

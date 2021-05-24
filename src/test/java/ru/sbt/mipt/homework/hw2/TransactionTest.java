@@ -1,4 +1,4 @@
-package ru.sbt.hw2;
+package ru.sbt.mipt.homework.hw2;
 
 import org.junit.Assert;
 import org.junit.Before;

@@ -1,11 +1,11 @@
-package ru.sbt.hw2;
+package ru.sbt.mipt.homework.hw2;
 
 import java.util.*;
 
 public class AnalyticsManager {
     private final TransactionManager transactionManager;
-    private Comparator<Transaction> transactionComparatorByAmount =
-            (Transaction t1, Transaction t2)->Double.compare(t2.getAmount(), t1.getAmount());
+    private final Comparator<Transaction> transactionComparatorByAmount =
+            (Transaction t1, Transaction t2) -> Double.compare(t2.getAmount(), t1.getAmount());
 
     public AnalyticsManager(TransactionManager transactionManager) {
         this.transactionManager = transactionManager;

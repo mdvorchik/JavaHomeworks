@@ -1,12 +1,12 @@
-package ru.sbt.hw2;
+package ru.sbt.mipt.homework.hw2;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
 public class TransactionManager {
-    private HashMap<Account, ArrayList<Transaction>> transactionsByAccountMap;
-    private ArrayList<Transaction> transactions;
+    private final HashMap<Account, ArrayList<Transaction>> transactionsByAccountMap;
+    private final ArrayList<Transaction> transactions;
 
     private void addTransactionToAccount(Transaction transaction, Account account) {
         if (!transactionsByAccountMap.containsKey(account)) {
