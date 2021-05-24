@@ -1,99 +1,140 @@
 package ru.sbt.mipt.homework.hw1;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.*;
+import static org.junit.Assume.assumeTrue;
 
 public class CustomerTest {
 
-    private Customer customer;
-
-    @Before
-    public void setUp(){
-        customer = new Customer("John", "Smith");
-        customer.openAccount(3);
-    }
-
     @Test (expected = IllegalArgumentException.class)
     public void customerConstructorTest_NullName_And_Surname() {
+        //given
         String name = null;
         String surname = null;
         Customer customer = new Customer(name, surname);
-        customer.fullName();
+        //when
+        assertThrows(IllegalArgumentException.class, customer::fullName);
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void customerConstructorTest_NullSurname() {
+        //given
         String name = "John";
         String surname = null;
         Customer customer = new Customer(name, surname);
-        customer.fullName();
+        //when
+        assertThrows(IllegalArgumentException.class, customer::fullName);
     }
 
     @Test (expected = IllegalArgumentException.class)
     public void customerConstructorTest_NullName() {
+        //given
         String name = null;
         String surname = "Smith";
         Customer customer = new Customer(name, surname);
-        customer.fullName();
+        //when
+        assertThrows(IllegalArgumentException.class, customer::fullName);
     }
 
     @Test
     public void openExistAccount() {
-        Assert.assertFalse(customer.openAccount(3));
+        //given
+        Customer customer = new Customer("John", "Smith");
+        //when
+        customer.openAccount(3);
+        //verify
+        assertFalse(customer.openAccount(3));
     }
 
     @Test
     public void openNonExistAccount() {
-        customer = new Customer("Jhon", "Sina");
-        Assert.assertTrue(customer.openAccount(3));
+        //given
+        Customer customer = new Customer("Jhon", "Sina");
+        //verify
+        assertTrue(customer.openAccount(3));
     }
 
     @Test
     public void openClosedAccount() {
-        Assert.assertTrue(customer.closeAccount());
-        Assert.assertTrue(customer.openAccount(3));
+        //given
+        Customer customer = new Customer("John", "Smith");
+        customer.openAccount(3);
+        //when
+        assumeTrue(customer.closeAccount());
+        //verify
+        assertTrue(customer.openAccount(3));
     }
 
     @Test
     public void closeOpenedAccount() {
-        Assert.assertTrue(customer.closeAccount());
+        //given
+        Customer customer = new Customer("John", "Smith");
+        //when
+        customer.openAccount(3);
+        //verify
+        assertTrue(customer.closeAccount());
     }
 
     @Test
     public void closeClosedAccount() {
-        Assert.assertTrue(customer.closeAccount());
-        Assert.assertFalse(customer.closeAccount());
+        //given
+        Customer customer = new Customer("John", "Smith");
+        customer.openAccount(3);
+        //when
+        assumeTrue(customer.closeAccount());
+        //verify
+        assertFalse(customer.closeAccount());
     }
 
     @Test
     public void fullName() {
+        //given
+        Customer customer = new Customer("John", "Smith");
+        //verify
         Assert.assertEquals("John Smith", customer.fullName());
-        customer = new Customer("Billy", "Jin");
-        Assert.assertEquals("Billy Jin", customer.fullName());
     }
 
     @Test
     public void withdrawFromCurrentOpenedAccount() {
+        //given
+        Customer customer = new Customer("John", "Smith");
+        customer.openAccount(3);
         customer.addMoneyToCurrentAccount(100);
-        Assert.assertTrue(customer.withdrawFromCurrentAccount(20)); // 20 < 100
+        //verify
+        assertTrue(customer.withdrawFromCurrentAccount(20));
     }
 
     @Test
     public void withdrawFromCurrentClosedAccount() {
+        //given
+        Customer customer = new Customer("John", "Smith");
+        customer.openAccount(3);
         customer.addMoneyToCurrentAccount(100);
+        //when
         customer.closeAccount();
-        Assert.assertFalse(customer.withdrawFromCurrentAccount(20));
+        //verify
+        assertFalse(customer.withdrawFromCurrentAccount(20));
     }
 
     @Test
     public void addMoneyToOpenedAccount() {
-        Assert.assertTrue(customer.addMoneyToCurrentAccount(100));
+        //given
+        Customer customer = new Customer("John", "Smith");
+        customer.openAccount(3);
+        //verify
+        assertTrue(customer.addMoneyToCurrentAccount(100));
     }
 
     @Test
     public void addMoneyToClosedAccount() {
+        //given
+        Customer customer = new Customer("John", "Smith");
+        customer.openAccount(3);
+        //when
         customer.closeAccount();
-        Assert.assertFalse(customer.addMoneyToCurrentAccount(100));
+        //verify
+        assertFalse(customer.addMoneyToCurrentAccount(100));
     }
 }
