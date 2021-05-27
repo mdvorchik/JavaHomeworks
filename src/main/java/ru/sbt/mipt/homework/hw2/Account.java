@@ -3,6 +3,7 @@ package ru.sbt.mipt.homework.hw2;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 public class Account {
@@ -44,14 +45,13 @@ public class Account {
      * otherwise returns false
      */
     public boolean withdraw(double amount, Account beneficiary) {
-        boolean isOperationSuccess = false;
         LocalDate localDate = LocalDate.now();
         if (amount > 0 && this.balanceOn(localDate) - amount >= 0) {
             Transaction transaction = transactionManager.createTransaction(amount, this, beneficiary);
             transactionManager.executeTransaction(transaction);
-            isOperationSuccess = true;
+            return true;
         }
-        return isOperationSuccess;
+        return false;
     }
 
     /**
@@ -63,8 +63,7 @@ public class Account {
      * otherwise returns false
      */
     public boolean withdrawCash(double amount) {
-        boolean isOperationSuccess = withdraw(amount, null);
-        return isOperationSuccess;
+        return withdraw(amount, null);
     }
 
     /**
@@ -76,13 +75,12 @@ public class Account {
      * otherwise returns false
      */
     public boolean addCash(double amount) {
-        boolean isOperationSuccess = false;
         if (amount > 0) {
             Transaction transaction = transactionManager.createTransaction(amount, null, this);
             transactionManager.executeTransaction(transaction);
-            isOperationSuccess = true;
+            return true;
         }
-        return isOperationSuccess;
+        return false;
     }
 
     /**
@@ -94,19 +92,17 @@ public class Account {
      * otherwise returns false
      */
     public boolean add(double amount) {
-        boolean isOperationSuccess = false;
         if (amount > 0) {
             Transaction transaction = transactionManager.createTransaction(-amount, this, null);
             transactionManager.executeTransaction(transaction);
-            isOperationSuccess = true;
+            return true;
         }
-        return isOperationSuccess;
+        return false;
     }
 
     public Collection<Entry> history(LocalDate from, LocalDate to) {
         if (from.compareTo(to) > 0) throw new IllegalArgumentException("\"From\" must be less then \"to\"");
-        Collection<Entry> historyOfEntry = entries.betweenDates(from, to);
-        return historyOfEntry;
+        return entries.betweenDates(from, to);
     }
 
     /**
@@ -118,7 +114,7 @@ public class Account {
         double balance = 0;
         if (entries.first() == null) return 0;
         LocalDate dateOfFirstEntry = LocalDate.from(entries.first().getTime());
-        ArrayList<Entry> historyBeforeDate = (ArrayList<Entry>) history(dateOfFirstEntry, date);
+        List<Entry> historyBeforeDate = (ArrayList<Entry>) history(dateOfFirstEntry, date);
         for (Entry entry: historyBeforeDate) {
             balance += entry.getAmount();
         }
@@ -129,9 +125,9 @@ public class Account {
      * Finds the last transaction of the account and rollbacks it
      */
     public void rollbackLastTransaction() {
-         ArrayList<Transaction> transactionArrayList = (ArrayList<Transaction>) transactionManager.findAllTransactionsByAccount(this);
-         Transaction lastTransaction = transactionArrayList.get(transactionArrayList.size()-1);
-         transactionManager.rollbackTransaction(lastTransaction);
+        List<Transaction> transactionArrayList = (ArrayList<Transaction>) transactionManager.findAllTransactionsByAccount(this);
+        Transaction lastTransaction = transactionArrayList.get(transactionArrayList.size() - 1);
+        transactionManager.rollbackTransaction(lastTransaction);
     }
 }
     

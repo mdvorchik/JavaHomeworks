@@ -1,6 +1,7 @@
 package ru.sbt.mipt.homework.hw2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -9,13 +10,11 @@ public class TransactionManager {
     private final ArrayList<Transaction> transactions;
 
     private void addTransactionToAccount(Transaction transaction, Account account) {
-        if (!transactionsByAccountMap.containsKey(account)) {
-            ArrayList<Transaction> transactionArrayList = new ArrayList<>();
-            transactionArrayList.add(transaction);
-            transactionsByAccountMap.put(account, transactionArrayList);
-        } else {
-            transactionsByAccountMap.get(account).add(transaction);
-        }
+        transactionsByAccountMap.computeIfPresent(account, (key, value) -> {
+            value.add(transaction);
+            return value;
+        });
+        transactionsByAccountMap.putIfAbsent(account, new ArrayList<>(Arrays.asList(transaction)));
     }
 
     private void addTransactionToAllPlaces(Transaction transaction, Account originator, Account beneficiary) {

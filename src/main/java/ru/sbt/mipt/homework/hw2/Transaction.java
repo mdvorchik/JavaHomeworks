@@ -37,7 +37,6 @@ public class Transaction {
      */
     public Transaction execute() {
         if (executed) throw new IllegalStateException("This transaction was already executed");
-        Transaction transaction;
         LocalDateTime timeWhenTransactionExecuted = LocalDateTime.now();
         if (originator != null) {
             Entry entryOriginator = new Entry(originator, this, -amount, timeWhenTransactionExecuted);
@@ -47,7 +46,7 @@ public class Transaction {
             Entry entryBeneficiary = new Entry(beneficiary, this, amount, timeWhenTransactionExecuted);
             beneficiary.getEntries().addEntry(entryBeneficiary);
         }
-        transaction = new Transaction(this.id, this.amount, this.originator, this.beneficiary, true, false);
+        Transaction transaction = new Transaction(this.id, this.amount, this.originator, this.beneficiary, true, false);
         return transaction;
     }
 
