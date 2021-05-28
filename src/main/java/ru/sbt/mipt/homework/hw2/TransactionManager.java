@@ -1,20 +1,17 @@
 package ru.sbt.mipt.homework.hw2;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.*;
 
 public class TransactionManager {
-    private final HashMap<Account, ArrayList<Transaction>> transactionsByAccountMap;
+    private final Map<Account, List<Transaction>> transactionsByAccount;
     private final ArrayList<Transaction> transactions;
 
     private void addTransactionToAccount(Transaction transaction, Account account) {
-        transactionsByAccountMap.computeIfPresent(account, (key, value) -> {
+        transactionsByAccount.computeIfPresent(account, (key, value) -> {
             value.add(transaction);
             return value;
         });
-        transactionsByAccountMap.putIfAbsent(account, new ArrayList<>(Arrays.asList(transaction)));
+        transactionsByAccount.putIfAbsent(account, new ArrayList<>(Collections.singletonList(transaction)));
     }
 
     private void addTransactionToAllPlaces(Transaction transaction, Account originator, Account beneficiary) {
@@ -23,16 +20,17 @@ public class TransactionManager {
         if (beneficiary != null) addTransactionToAccount(transaction, beneficiary);
     }
 
-    public TransactionManager(HashMap<Account, ArrayList<Transaction>> transactionsByAccountMap, ArrayList<Transaction> transactions) {
-        this.transactionsByAccountMap = transactionsByAccountMap;
+    public TransactionManager(HashMap<Account, List<Transaction>> transactionsByAccountMap, ArrayList<Transaction> transactions) {
+        this.transactionsByAccount = transactionsByAccountMap;
         this.transactions = transactions;
     }
 
     /**
      * Creates and stores transactions
-     * @param amount
-     * @param originator
-     * @param beneficiary
+     *
+     * @param amount      - amount
+     * @param originator  - originator
+     * @param beneficiary - beneficiary
      * @return created Transaction
      */
     public Transaction createTransaction(double amount,
@@ -45,8 +43,7 @@ public class TransactionManager {
 
     public Collection<Transaction> findAllTransactionsByAccount(Account account) {
         if (account == null) throw new IllegalArgumentException();
-        ArrayList<Transaction> transactionsByAccount = transactionsByAccountMap.get(account);
-        return transactionsByAccount;
+        return this.transactionsByAccount.get(account);
     }
 
     public void rollbackTransaction(Transaction transaction) {

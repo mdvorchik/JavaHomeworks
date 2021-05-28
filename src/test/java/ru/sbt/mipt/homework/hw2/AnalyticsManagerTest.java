@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 
 public class AnalyticsManagerTest {
 
@@ -23,7 +24,7 @@ public class AnalyticsManagerTest {
 
     @Before
     public void setUp() {
-        HashMap<Account, ArrayList<Transaction>> hashMap = new HashMap<>();
+        HashMap<Account, List<Transaction>> hashMap = new HashMap<>();
         ArrayList<Transaction> transactions = new ArrayList<>();
         transactionManager = new TransactionManager(hashMap, transactions);
         analyticsManager = new AnalyticsManager(transactionManager);

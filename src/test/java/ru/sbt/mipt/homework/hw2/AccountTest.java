@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class AccountTest {
 
@@ -16,7 +17,7 @@ public class AccountTest {
 
     @Before
     public void setUp() {
-        HashMap<Account, ArrayList<Transaction>> hashMap = new HashMap<>();
+        HashMap<Account, List<Transaction>> hashMap = new HashMap<>();
         ArrayList<Transaction> transactions = new ArrayList<>();
         transactionManager = new TransactionManager(hashMap, transactions);
         account1 = new Account(1, transactionManager);
