@@ -1,10 +1,7 @@
 package ru.sbt.mipt.homework.hw2;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class Account {
     private final long id;
@@ -33,7 +30,7 @@ public class Account {
     public Account(long id, TransactionManager transactionManager) {
         this.id = id;
         this.transactionManager = transactionManager;
-        this.entries = new Entries(new ArrayList<>());
+        this.entries = new Entries(new TreeMap<>());
     }
 
     /**

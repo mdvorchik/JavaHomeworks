@@ -9,31 +9,19 @@ import java.util.stream.Collectors;
  */
 public class Entries {
 
-    /**
-     * entries must be sorted by LocalDateTime
-     */
-    private final List<Entry> entries;
-    private final Map<LocalDate, List<Entry>> entriesMultiMap = new TreeMap<>();
+    private final Map<LocalDate, List<Entry>> entriesMultiMap;
 
-    public Entries(ArrayList<Entry> entries) {
-        this.entries = entries;
-        for (Entry entry : entries) {
-            entriesMultiMap.computeIfPresent(entry.getTime().toLocalDate(), (key, value) -> {
-                value.add(entry);
-                return value;
-            });
-            entriesMultiMap.putIfAbsent(entry.getTime().toLocalDate(), new ArrayList<>(Arrays.asList(entry)));
-        }
+    public Entries(TreeMap<LocalDate, List<Entry>> entriesMultiMap) {
+        this.entriesMultiMap = entriesMultiMap;
     }
 
     void addEntry(Entry entry) {
         if (entry != null) {
-            entries.add(entry);
             entriesMultiMap.computeIfPresent(entry.getTime().toLocalDate(), (key, value) -> {
                 value.add(entry);
                 return value;
             });
-            entriesMultiMap.putIfAbsent(entry.getTime().toLocalDate(), new ArrayList<>(Arrays.asList(entry)));
+            entriesMultiMap.putIfAbsent(entry.getTime().toLocalDate(), new ArrayList<>(Collections.singletonList(entry)));
         }
     }
 
@@ -41,7 +29,7 @@ public class Entries {
         return entriesMultiMap.entrySet()
                 .stream()
                 .filter((map) -> map.getKey().compareTo(date) >= 0)
-                .map((map) -> map.getValue())
+                .map(Map.Entry::getValue)
                 .collect(Collectors.toList())
                 .stream().reduce((list1, list2) -> {
                     list1.addAll(list2);
@@ -54,7 +42,7 @@ public class Entries {
         return entriesMultiMap.entrySet()
                 .stream()
                 .filter((map) -> map.getKey().compareTo(from) >= 0 && map.getKey().compareTo(to) <= 0)
-                .map((map) -> map.getValue())
+                .map(Map.Entry::getValue)
                 .collect(Collectors.toList())
                 .stream().reduce((list1, list2) -> {
                     list1.addAll(list2);
@@ -64,12 +52,18 @@ public class Entries {
     }
 
     Entry last() {
-        if (entries != null && !entries.isEmpty()) return entries.get(entries.size() - 1);
-        return null;
+        if (entriesMultiMap != null && !entriesMultiMap.isEmpty()) {
+            LocalDate lastKey = (LocalDate) entriesMultiMap.keySet().toArray()[entriesMultiMap.size() - 1];
+            List<Entry> entryArrayList = entriesMultiMap.get(lastKey);
+            return entryArrayList.get(entryArrayList.size() - 1);
+        } else return null;
     }
 
     Entry first() {
-        if (entries != null && !entries.isEmpty()) return entries.get(0);
-        return null;
+        if (entriesMultiMap != null && !entriesMultiMap.isEmpty()) {
+            LocalDate firstKey = (LocalDate) entriesMultiMap.keySet().toArray()[0];
+            List<Entry> entryArrayList = entriesMultiMap.get(firstKey);
+            return entryArrayList.get(0);
+        } else return null;
     }
 }
