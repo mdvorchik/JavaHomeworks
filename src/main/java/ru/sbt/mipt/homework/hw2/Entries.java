@@ -38,21 +38,29 @@ public class Entries {
     }
 
     Collection<Entry> from(LocalDate date) {
-        Map<LocalDate, List<Entry>> tempMap = entriesMultiMap.entrySet().stream()
+        return entriesMultiMap.entrySet()
+                .stream()
                 .filter((map) -> map.getKey().compareTo(date) >= 0)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        List<Entry> treeSet = new ArrayList<>();
-        tempMap.entrySet().stream().forEach(t -> treeSet.addAll(t.getValue()));
-        return treeSet.stream().sorted().collect(Collectors.toList());
+                .map((map) -> map.getValue())
+                .collect(Collectors.toList())
+                .stream().reduce((list1, list2) -> {
+                    list1.addAll(list2);
+                    return list1;
+                })
+                .orElse(new ArrayList<>());
     }
 
     Collection<Entry> betweenDates(LocalDate from, LocalDate to) {
-        Map<LocalDate, List<Entry>> tempMap = entriesMultiMap.entrySet().stream()
+        return entriesMultiMap.entrySet()
+                .stream()
                 .filter((map) -> map.getKey().compareTo(from) >= 0 && map.getKey().compareTo(to) <= 0)
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-        List<Entry> treeSet = new ArrayList<>();
-        tempMap.entrySet().stream().forEach(t -> treeSet.addAll(t.getValue()));
-        return treeSet.stream().sorted().collect(Collectors.toList());
+                .map((map) -> map.getValue())
+                .collect(Collectors.toList())
+                .stream().reduce((list1, list2) -> {
+                    list1.addAll(list2);
+                    return list1;
+                })
+                .orElse(new ArrayList<>());
     }
 
     Entry last() {
