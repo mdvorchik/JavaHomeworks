@@ -1,65 +1,90 @@
 package ru.sbt.mipt.homework.hw2;
 
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
+
 public class TransactionTest {
 
-    private TransactionManager transactionManager;
-    private Transaction transaction1;
-    private Transaction transaction2;
-    private Transaction transaction3;
-    private Account account1;
-    private Account account2;
-
-    @Before
-    public void setUp() {
-        HashMap<Account, List<Transaction>> hashMap = new HashMap<>();
-        ArrayList<Transaction> transactions = new ArrayList<>();
-        transactionManager = new TransactionManager(hashMap, transactions);
-        account1 = new Account(1, transactionManager);
-        account2 = new Account(2, transactionManager);
-        transaction1 = transactionManager.createTransaction(333, account1, account2);
-        transaction2 = transactionManager.createTransaction(-777, account1, account2);
-        transaction3 = transactionManager.createTransaction(-222, account1, account2);
-
-    }
-
-    @Test (expected = IllegalStateException.class)
-    public void executeWithException() {
-        transaction2 = transaction1.execute();
-        transaction2.execute();
+    @Test
+    public void executeWithIllegalStateExceptionWhenExecuteTransactionTwice() {
+        //given
+        TransactionManager transactionManager = prepareTransactionManager();
+        List<Account> accountList = prepareAccountList(transactionManager);
+        List<Transaction> transactionList = prepareTransactionList(transactionManager, accountList);
+        //verify
+        assertThrows(IllegalStateException.class, () -> transactionList.get(0).execute().execute());
     }
 
     @Test
     public void executeWorkByAmount() {
-        transaction1.execute();
-        Assert.assertEquals( -333, account1.getEntries().last().getAmount(), 0.0001);
-        Assert.assertEquals( 333, account2.getEntries().last().getAmount(),0.0001);
+        //given
+        TransactionManager transactionManager = prepareTransactionManager();
+        List<Account> accountList = prepareAccountList(transactionManager);
+        List<Transaction> transactionList = prepareTransactionList(transactionManager, accountList);
+        //when
+        transactionList.get(0).execute();
+        //verify
+        assertEquals(-333, accountList.get(0).getEntries().last().getAmount(), 0.0001);
+        assertEquals(333, accountList.get(1).getEntries().last().getAmount(), 0.0001);
     }
 
-    @Test (expected = IllegalStateException.class)
-    public void rollbackWithExceptionTooManyRollback() {
-        transaction2 = transaction1.execute();
-        transaction3 = transaction2.rollback();
-        transaction3.rollback();
+    @Test
+    public void rollbackWithExceptionWhenRollbackTwice() {
+        //given
+        TransactionManager transactionManager = prepareTransactionManager();
+        List<Account> accountList = prepareAccountList(transactionManager);
+        List<Transaction> transactionList = prepareTransactionList(transactionManager, accountList);
+        //verify
+        assertThrows(IllegalStateException.class, () -> transactionList.get(0).execute().rollback().rollback());
     }
 
-    @Test (expected = IllegalStateException.class)
+    @Test
     public void rollbackWithExceptionTransactionDoesNotExecutedYet() {
-        transaction1.rollback();
+        //given
+        TransactionManager transactionManager = prepareTransactionManager();
+        List<Account> accountList = prepareAccountList(transactionManager);
+        List<Transaction> transactionList = prepareTransactionList(transactionManager, accountList);
+        //verify
+        assertThrows(IllegalStateException.class, () -> transactionList.get(0).rollback());
     }
 
     @Test
     public void rollbackWorkByAmount() {
-        transaction2 = transaction1.execute();
-        transaction2.rollback();
-        Assert.assertEquals( 333, account1.getEntries().last().getAmount(), 0.0001);
-        Assert.assertEquals( -333, account2.getEntries().last().getAmount(), 0.0001);
+        //given
+        TransactionManager transactionManager = prepareTransactionManager();
+        List<Account> accountList = prepareAccountList(transactionManager);
+        List<Transaction> transactionList = prepareTransactionList(transactionManager, accountList);
+        //when
+        transactionList.get(0).execute().rollback();
+        //verify
+        assertEquals(333, accountList.get(0).getEntries().last().getAmount(), 0.0001);
+        assertEquals(-333, accountList.get(1).getEntries().last().getAmount(), 0.0001);
+    }
+
+    private TransactionManager prepareTransactionManager() {
+        return new TransactionManager(new HashMap<>(), new ArrayList<>());
+    }
+
+    private List<Account> prepareAccountList(TransactionManager transactionManager) {
+        List<Account> accounts = new ArrayList<>();
+        accounts.add(new Account(1, transactionManager));
+        accounts.add(new Account(2, transactionManager));
+        return accounts;
+    }
+
+    private List<Transaction> prepareTransactionList(TransactionManager transactionManager, List<Account> accounts) {
+        List<Transaction> transactions = new ArrayList<>();
+        if (accounts.size() > 1) {
+            transactions.add(transactionManager.createTransaction(333, accounts.get(0), accounts.get(1)));
+            transactions.add(transactionManager.createTransaction(-777, accounts.get(0), accounts.get(1)));
+            transactions.add(transactionManager.createTransaction(-222, accounts.get(0), accounts.get(1)));
+        }
+        return transactions;
     }
 }
