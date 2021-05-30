@@ -42,11 +42,11 @@ public class EntriesTest {
         Entries entries = new Entries(new TreeMap<>());
         List<Entry> entryList = setUpEntryList();
         fillEntries(entries, entryList);
-        ArrayList<Entry> expectedList = new ArrayList<>();
+        List<Entry> expectedList = new ArrayList<>();
         expectedList.add(entryList.get(2));
         expectedList.add(entryList.get(3));
         //when
-        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries.from(entryList.get(1).getTime().plusDays(3).toLocalDate());
+        List<Entry> entriesList = (ArrayList<Entry>) entries.from(entryList.get(1).getTime().plusDays(3).toLocalDate());
         //verify
         assertArrayEquals(expectedList.toArray(), entriesList.toArray());
     }
@@ -58,7 +58,7 @@ public class EntriesTest {
         List<Entry> entryList = setUpEntryList();
         fillEntries(entries, entryList);
         //when
-        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries.from(entryList.get(3).getTime().plusDays(30).toLocalDate());
+        List<Entry> entriesList = (ArrayList<Entry>) entries.from(entryList.get(3).getTime().plusDays(30).toLocalDate());
         //verify
         assertArrayEquals(Collections.EMPTY_LIST.toArray(), entriesList.toArray());
     }
@@ -69,9 +69,9 @@ public class EntriesTest {
         Entries entries = new Entries(new TreeMap<>());
         List<Entry> entryList = setUpEntryList();
         fillEntries(entries, entryList);
-        ArrayList<Entry> expectedList = new ArrayList<>(entryList);
+        List<Entry> expectedList = new ArrayList<>(entryList);
         //when
-        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries.from(entryList.get(0).getTime().minusDays(30).toLocalDate());
+        List<Entry> entriesList = (ArrayList<Entry>) entries.from(entryList.get(0).getTime().minusDays(30).toLocalDate());
         //verify
         assertArrayEquals(expectedList.toArray(), entriesList.toArray());
     }
@@ -82,9 +82,9 @@ public class EntriesTest {
         Entries entries = new Entries(new TreeMap<>());
         List<Entry> entryList = setUpEntryList();
         fillEntries(entries, entryList);
-        ArrayList<Entry> expectedList = new ArrayList<>(entryList);
+        List<Entry> expectedList = new ArrayList<>(entryList);
         //when
-        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries.from(entryList.get(0).getTime().toLocalDate());
+        List<Entry> entriesList = (ArrayList<Entry>) entries.from(entryList.get(0).getTime().toLocalDate());
         //verify
         assertArrayEquals(expectedList.toArray(), entriesList.toArray());
     }
@@ -95,9 +95,9 @@ public class EntriesTest {
         Entries entries = new Entries(new TreeMap<>());
         List<Entry> entryList = setUpEntryList();
         fillEntries(entries, entryList);
-        ArrayList<Entry> expectedList = new ArrayList<>(entryList);
+        List<Entry> expectedList = new ArrayList<>(entryList);
         //when
-        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries.betweenDates(entryList.get(0).getTime().minusDays(30).toLocalDate(),
+        List<Entry> entriesList = (ArrayList<Entry>) entries.betweenDates(entryList.get(0).getTime().minusDays(30).toLocalDate(),
                 entryList.get(3).getTime().plusDays(100).toLocalDate());
         //verify
         assertArrayEquals(expectedList.toArray(), entriesList.toArray());
@@ -109,10 +109,10 @@ public class EntriesTest {
         Entries entries = new Entries(new TreeMap<>());
         List<Entry> entryList = setUpEntryList();
         fillEntries(entries, entryList);
-        ArrayList<Entry> expectedList = new ArrayList<>();
+        List<Entry> expectedList = new ArrayList<>();
         expectedList.add(entryList.get(2));
         //when
-        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries.betweenDates(entryList.get(1).getTime().plusDays(1).toLocalDate(),
+        List<Entry> entriesList = (ArrayList<Entry>) entries.betweenDates(entryList.get(1).getTime().plusDays(1).toLocalDate(),
                 entryList.get(2).getTime().plusDays(1).toLocalDate());
         //verify
         assertArrayEquals(expectedList.toArray(), entriesList.toArray());
@@ -124,12 +124,12 @@ public class EntriesTest {
         Entries entries = new Entries(new TreeMap<>());
         List<Entry> entryList = setUpEntryList();
         fillEntries(entries, entryList);
-        ArrayList<Entry> expectedList = new ArrayList<>();
+        List<Entry> expectedList = new ArrayList<>();
         expectedList.add(entryList.get(0));
         expectedList.add(entryList.get(1));
         expectedList.add(entryList.get(2));
         //when
-        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries.betweenDates(entryList.get(0).getTime().toLocalDate(),
+        List<Entry> entriesList = (ArrayList<Entry>) entries.betweenDates(entryList.get(0).getTime().toLocalDate(),
                 entryList.get(2).getTime().toLocalDate()); //plus 1
         //verify
         assertArrayEquals(expectedList.toArray(), entriesList.toArray());
@@ -142,7 +142,7 @@ public class EntriesTest {
         List<Entry> entryList = setUpEntryList();
         fillEntries(entries, entryList);
         //when
-        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries.betweenDates(entryList.get(2).getTime().plusDays(1).toLocalDate(),
+        List<Entry> entriesList = (ArrayList<Entry>) entries.betweenDates(entryList.get(2).getTime().plusDays(1).toLocalDate(),
                 entryList.get(3).getTime().minusDays(1).toLocalDate());
         //verify
         assertArrayEquals(Collections.EMPTY_LIST.toArray(), entriesList.toArray());
