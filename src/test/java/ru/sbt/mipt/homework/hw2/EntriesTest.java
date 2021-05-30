@@ -1,190 +1,248 @@
 package ru.sbt.mipt.homework.hw2;
 
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class EntriesTest {
 
-    private TransactionManager transactionManager;
-    private Transaction transaction1;
-    private Transaction transaction2;
-    private Transaction transaction3;
-    private Transaction transaction4;
-    private Account account1;
-    private Account account2;
-    private Entry entry1;
-    private Entry entry2;
-    private Entry entry3;
-    private Entry entry4;
-    private LocalDateTime localDateTime1;
-    private LocalDateTime localDateTime2;
-    private LocalDateTime localDateTime3;
-    private LocalDateTime localDateTime4;
-    private Entries entries1;
-
-    @Before
-    public void setUp() {
-        HashMap<Account, List<Transaction>> hashMap = new HashMap<>();
-        ArrayList<Transaction> transactions = new ArrayList<>();
-        transactionManager = new TransactionManager(hashMap, transactions);
-        account1 = new Account(1, transactionManager);
-        account2 = new Account(2, transactionManager);
-        transaction1 = transactionManager.createTransaction(333, account1, account2);
-        transaction2 = transactionManager.createTransaction(-777, account1, account2);
-        transaction3 = transactionManager.createTransaction(-222, account1, account2);
-        transaction4 = transactionManager.createTransaction(888, account2, account1);
-        localDateTime1 = LocalDateTime.now();
-        localDateTime2 = LocalDateTime.now().plusMinutes(1);
-        localDateTime3 = LocalDateTime.now().plusDays(5);
-        localDateTime4 = LocalDateTime.now().plusDays(15);
-        entry1 = new Entry(account1, transaction1, transaction1.getAmount(), localDateTime1);
-        entry2 = new Entry(account1, transaction2, transaction2.getAmount(), localDateTime2);
-        entry3 = new Entry(account1, transaction3, transaction3.getAmount(), localDateTime3);
-        entry4 = new Entry(account1, transaction4, transaction4.getAmount(), localDateTime4);
-        entries1 = account1.getEntries();
+    @Test
+    public void addEntryOnce() {
+        //given
+        Entries entries = new Entries(new TreeMap<>());
+        List<Entry> entryList = setUpEntryList();
+        Entry entry = entryList.get(0);
+        //when
+        entries.addEntry(entry);
+        //verify
+        assertEquals(entry.getTime(), entries.last().getTime());
     }
 
     @Test
-    public void addEntry() {
-        entries1.addEntry(entry1);
-        assertEquals(entry1.getTime(), entries1.last().getTime());
-        entries1.addEntry(entry2);
-        assertEquals(entry2.getTime(), entries1.last().getTime());
+    public void addEntryTwice() {
+        //given
+        Entries entries = new Entries(new TreeMap<>());
+        List<Entry> entryList = setUpEntryList();
+        Entry entry1 = entryList.get(0);
+        Entry entry2 = entryList.get(1);
+        //when
+        entries.addEntry(entry1);
+        entries.addEntry(entry2);
+        //verify
+        assertEquals(entry2.getTime(), entries.last().getTime());
     }
 
     @Test
-    public void fromFromRandomTime() {
-        entries1.addEntry(entry1);
-        entries1.addEntry(entry2);
-        entries1.addEntry(entry3);
-        entries1.addEntry(entry4);
+    public void fromMiddleTime() {
+        //given
+        Entries entries = new Entries(new TreeMap<>());
+        List<Entry> entryList = setUpEntryList();
+        fillEntries(entries, entryList);
         ArrayList<Entry> expectedList = new ArrayList<>();
-        expectedList.add(entry3);
-        expectedList.add(entry4);
-        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.from(localDateTime2.plusDays(3).toLocalDate());
-        Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
+        expectedList.add(entryList.get(2));
+        expectedList.add(entryList.get(3));
+        //when
+        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries.from(entryList.get(1).getTime().plusDays(3).toLocalDate());
+        //verify
+        assertArrayEquals(expectedList.toArray(), entriesList.toArray());
     }
 
     @Test
     public void fromWithNoElement() {
-        entries1.addEntry(entry1);
-        entries1.addEntry(entry2);
-        entries1.addEntry(entry3);
-        entries1.addEntry(entry4);
-        ArrayList<Entry> expectedList = new ArrayList<>();
-        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.from(localDateTime2.plusDays(30).toLocalDate());
-        Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
+        //given
+        Entries entries = new Entries(new TreeMap<>());
+        List<Entry> entryList = setUpEntryList();
+        fillEntries(entries, entryList);
+        //when
+        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries.from(entryList.get(3).getTime().plusDays(30).toLocalDate());
+        //verify
+        assertArrayEquals(Collections.EMPTY_LIST.toArray(), entriesList.toArray());
     }
 
     @Test
-    public void fromAllElements() {
-        entries1.addEntry(entry1);
-        entries1.addEntry(entry2);
-        entries1.addEntry(entry3);
-        entries1.addEntry(entry4);
-        ArrayList<Entry> expectedList = new ArrayList<>();
-        expectedList.add(entry1);
-        expectedList.add(entry2);
-        expectedList.add(entry3);
-        expectedList.add(entry4);
-        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.from(localDateTime1.minusDays(30).toLocalDate());
-        Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
+    public void fromVeryEarlyTime() {
+        //given
+        Entries entries = new Entries(new TreeMap<>());
+        List<Entry> entryList = setUpEntryList();
+        fillEntries(entries, entryList);
+        ArrayList<Entry> expectedList = new ArrayList<>(entryList);
+        //when
+        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries.from(entryList.get(0).getTime().minusDays(30).toLocalDate());
+        //verify
+        assertArrayEquals(expectedList.toArray(), entriesList.toArray());
     }
 
     @Test
-    public void fromFromFirstElement() {
-        entries1.addEntry(entry1);
-        entries1.addEntry(entry2);
-        entries1.addEntry(entry3);
-        ArrayList<Entry> expectedList = new ArrayList<>();
-        expectedList.add(entry1);
-        expectedList.add(entry2);
-        expectedList.add(entry3);
-        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.from(localDateTime1.toLocalDate());
-        Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
+    public void fromFirstElementTime() {
+        //given
+        Entries entries = new Entries(new TreeMap<>());
+        List<Entry> entryList = setUpEntryList();
+        fillEntries(entries, entryList);
+        ArrayList<Entry> expectedList = new ArrayList<>(entryList);
+        //when
+        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries.from(entryList.get(0).getTime().toLocalDate());
+        //verify
+        assertArrayEquals(expectedList.toArray(), entriesList.toArray());
     }
 
     @Test
     public void betweenDatesAllEntries() {
-        entries1.addEntry(entry1);
-        entries1.addEntry(entry2);
-        entries1.addEntry(entry3);
-        entries1.addEntry(entry4);
-        ArrayList<Entry> expectedList = new ArrayList<>();
-        expectedList.add(entry1);
-        expectedList.add(entry2);
-        expectedList.add(entry3);
-        expectedList.add(entry4);
-        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.betweenDates(localDateTime1.minusDays(3).toLocalDate(), localDateTime4.plusDays(100).toLocalDate());
-        Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
+        //given
+        Entries entries = new Entries(new TreeMap<>());
+        List<Entry> entryList = setUpEntryList();
+        fillEntries(entries, entryList);
+        ArrayList<Entry> expectedList = new ArrayList<>(entryList);
+        //when
+        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries.betweenDates(entryList.get(0).getTime().minusDays(30).toLocalDate(),
+                entryList.get(3).getTime().plusDays(100).toLocalDate());
+        //verify
+        assertArrayEquals(expectedList.toArray(), entriesList.toArray());
     }
 
     @Test
-    public void betweenDatesOneEntries() {
-        entries1.addEntry(entry1);
-        entries1.addEntry(entry2);
-        entries1.addEntry(entry3);
-        entries1.addEntry(entry4);
+    public void betweenDatesOneEntry() {
+        //given
+        Entries entries = new Entries(new TreeMap<>());
+        List<Entry> entryList = setUpEntryList();
+        fillEntries(entries, entryList);
         ArrayList<Entry> expectedList = new ArrayList<>();
-        expectedList.add(entry3);
-        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.betweenDates(localDateTime2.plusDays(1).toLocalDate(), localDateTime3.plusDays(1).toLocalDate());
-        Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
+        expectedList.add(entryList.get(2));
+        //when
+        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries.betweenDates(entryList.get(1).getTime().plusDays(1).toLocalDate(),
+                entryList.get(2).getTime().plusDays(1).toLocalDate());
+        //verify
+        assertArrayEquals(expectedList.toArray(), entriesList.toArray());
     }
 
     @Test
     public void betweenDatesSomeEntries() {
-        entries1.addEntry(entry1);
-        entries1.addEntry(entry2);
-        entries1.addEntry(entry3);
-        entries1.addEntry(entry4);
+        //given
+        Entries entries = new Entries(new TreeMap<>());
+        List<Entry> entryList = setUpEntryList();
+        fillEntries(entries, entryList);
         ArrayList<Entry> expectedList = new ArrayList<>();
-        expectedList.add(entry1);
-        expectedList.add(entry2);
-        expectedList.add(entry3);
-        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.betweenDates(localDateTime1.toLocalDate(), localDateTime3.plusDays(1).toLocalDate());
-        Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
+        expectedList.add(entryList.get(0));
+        expectedList.add(entryList.get(1));
+        expectedList.add(entryList.get(2));
+        //when
+        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries.betweenDates(entryList.get(0).getTime().toLocalDate(),
+                entryList.get(2).getTime().toLocalDate()); //plus 1
+        //verify
+        assertArrayEquals(expectedList.toArray(), entriesList.toArray());
     }
 
     @Test
     public void betweenWithNoEntries() {
-        entries1.addEntry(entry1);
-        entries1.addEntry(entry2);
-        entries1.addEntry(entry3);
-        entries1.addEntry(entry4);
-        ArrayList<Entry> expectedList = new ArrayList<>();
-        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries1.betweenDates(localDateTime3.plusDays(1).toLocalDate(), localDateTime4.minusDays(1).toLocalDate());
-        Assert.assertArrayEquals(expectedList.toArray(), entriesList.toArray());
+        //given
+        Entries entries = new Entries(new TreeMap<>());
+        List<Entry> entryList = setUpEntryList();
+        fillEntries(entries, entryList);
+        //when
+        ArrayList<Entry> entriesList = (ArrayList<Entry>) entries.betweenDates(entryList.get(2).getTime().plusDays(1).toLocalDate(),
+                entryList.get(3).getTime().minusDays(1).toLocalDate());
+        //verify
+        assertArrayEquals(Collections.EMPTY_LIST.toArray(), entriesList.toArray());
     }
 
     @Test
-    public void last() {
-        entries1.addEntry(entry1);
-        Assert.assertEquals(entry1, entries1.last());
-        entries1.addEntry(entry2);
-        Assert.assertEquals(entry2, entries1.last());
-        entries1.addEntry(entry3);
-        Assert.assertEquals(entry3, entries1.last());
-        entries1.addEntry(entry4);
-        Assert.assertEquals(entry4, entries1.last());
+    public void lastWhenAddEntryOnce() {
+        //given
+        Entries entries = new Entries(new TreeMap<>());
+        List<Entry> entryList = setUpEntryList();
+        Entry entry = entryList.get(0);
+        //when
+        entries.addEntry(entry);
+        //verify
+        assertEquals(entry, entries.last());
     }
 
     @Test
-    public void first() {
-        entries1.addEntry(entry1);
-        Assert.assertEquals(entry1, entries1.first());
-        entries1.addEntry(entry2);
-        Assert.assertEquals(entry1, entries1.first());
-        entries1.addEntry(entry3);
-        Assert.assertEquals(entry1, entries1.first());
-        entries1.addEntry(entry4);
-        Assert.assertEquals(entry1, entries1.first());
+    public void lastWhenAddEntryTwice() {
+        //given
+        Entries entries = new Entries(new TreeMap<>());
+        List<Entry> entryList = setUpEntryList();
+        Entry entry1 = entryList.get(0);
+        Entry entry2 = entryList.get(1);
+        //when
+        entries.addEntry(entry1);
+        entries.addEntry(entry2);
+        //verify
+        assertEquals(entry2, entries.last());
+    }
+
+    @Test
+    public void firstWhenAddEntryOnce() {
+        //given
+        Entries entries = new Entries(new TreeMap<>());
+        List<Entry> entryList = setUpEntryList();
+        Entry entry = entryList.get(0);
+        //when
+        entries.addEntry(entry);
+        //verify
+        assertEquals(entry, entries.first());
+    }
+
+    @Test
+    public void firstWhenAddEntryTwice() {
+        //given
+        Entries entries = new Entries(new TreeMap<>());
+        List<Entry> entryList = setUpEntryList();
+        Entry entry1 = entryList.get(0);
+        Entry entry2 = entryList.get(1);
+        //when
+        entries.addEntry(entry1);
+        entries.addEntry(entry2);
+        //verify
+        assertEquals(entry1, entries.first());
+    }
+
+    private TransactionManager prepareTransactionManager() {
+        return new TransactionManager(new HashMap<>(), new ArrayList<>());
+    }
+
+    private List<Account> prepareAccountList(TransactionManager transactionManager) {
+        List<Account> accounts = new ArrayList<>();
+        accounts.add(new Account(1, transactionManager));
+        accounts.add(new Account(2, transactionManager));
+        return accounts;
+    }
+
+    private List<Transaction> prepareTransactionList(TransactionManager transactionManager, List<Account> accounts) {
+        List<Transaction> transactions = new ArrayList<>();
+        if (accounts.size() > 1) {
+            transactions.add(transactionManager.createTransaction(333, accounts.get(0), accounts.get(1)));
+            transactions.add(transactionManager.createTransaction(-777, accounts.get(0), accounts.get(1)));
+            transactions.add(transactionManager.createTransaction(-222, accounts.get(0), accounts.get(1)));
+            transactions.add(transactionManager.createTransaction(888, accounts.get(1), accounts.get(0)));
+        }
+        return transactions;
+    }
+
+    private List<Entry> prepareEntryList(List<Transaction> transactionList, List<Account> accountList) {
+        List<Entry> entries = new ArrayList<>();
+        if (transactionList.size() > 3 && accountList.size() > 0) {
+            entries.add(new Entry(accountList.get(0), transactionList.get(0), transactionList.get(0).getAmount(), LocalDateTime.now()));
+            entries.add(new Entry(accountList.get(0), transactionList.get(1), transactionList.get(1).getAmount(), LocalDateTime.now().plusMinutes(1)));
+            entries.add(new Entry(accountList.get(0), transactionList.get(2), transactionList.get(2).getAmount(), LocalDateTime.now().plusDays(5)));
+            entries.add(new Entry(accountList.get(0), transactionList.get(3), transactionList.get(3).getAmount(), LocalDateTime.now().plusDays(15)));
+        }
+        return entries;
+    }
+
+    private List<Entry> setUpEntryList() {
+        TransactionManager transactionManager = prepareTransactionManager();
+        List<Account> accountList = prepareAccountList(transactionManager);
+        List<Transaction> transactionList = prepareTransactionList(transactionManager, accountList);
+        return prepareEntryList(transactionList, accountList);
+    }
+
+    private void fillEntries(Entries entries, List<Entry> entryList) {
+        for (Entry entry : entryList) {
+            entries.addEntry(entry);
+        }
     }
 }
