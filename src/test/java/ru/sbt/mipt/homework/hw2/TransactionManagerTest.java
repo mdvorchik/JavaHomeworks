@@ -1,75 +1,79 @@
 package ru.sbt.mipt.homework.hw2;
 
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assume.assumeTrue;
+
 public class TransactionManagerTest {
-
-    private TransactionManager transactionManager;
-    private Transaction transaction1;
-    private Transaction transaction2;
-    private Account account1;
-    private Account account2;
-
-    @Before
-    public void setUp() {
-        HashMap<Account, List<Transaction>> hashMap = new HashMap<>();
-        ArrayList<Transaction> transactions = new ArrayList<>();
-        transactionManager = new TransactionManager(hashMap, transactions);
-        account1 = new Account(1, transactionManager);
-        account2 = new Account(2, transactionManager);
-
-    }
 
     @Test
     public void createTransaction() {
-        transaction1 = transactionManager.createTransaction(333, account1, account2);
-        transactionManager.executeTransaction(transaction1);
-        Assert.assertEquals( -333, account1.getEntries().last().getAmount(), 0.0001);
-        Assert.assertEquals( 333, account2.getEntries().last().getAmount(),0.0001);
+        //given
+        TransactionManager transactionManager = prepareTransactionManager();
+        List<Account> accountList = prepareAccountList(transactionManager);
+        //when
+        Transaction transaction = transactionManager.createTransaction(333, accountList.get(0), accountList.get(1));
+        assumeTrue(transaction.getOriginator().equals(accountList.get(0)));
+        assumeTrue(transaction.getBeneficiary().equals(accountList.get(1)));
+        //verify
+        assertEquals(333, transaction.getAmount(), 0.0001);
     }
 
     @Test
     public void findAllTransactionsByAccount() {
-        ArrayList<Transaction> transactionExpected = new ArrayList<>();
-        transaction1 = transactionManager.createTransaction(333, account1, account2);
-        transactionExpected.add(transaction1);
-        Assert.assertArrayEquals(transactionExpected.toArray(), transactionManager.findAllTransactionsByAccount(account1).toArray());
-        transaction2 = transactionManager.createTransaction(-777, account1, account2);
-        transactionExpected.add(transaction2);
-        Assert.assertArrayEquals(transactionExpected.toArray(), transactionManager.findAllTransactionsByAccount(account1).toArray());
-        transactionManager.executeTransaction(transaction2);
-        Assert.assertEquals(3, transactionManager.findAllTransactionsByAccount(account1).size());
-
+        //given
+        TransactionManager transactionManager = prepareTransactionManager();
+        List<Account> accountList = prepareAccountList(transactionManager);
+        Transaction transaction1 = transactionManager.createTransaction(333, accountList.get(0), accountList.get(1));
+        Transaction transaction2 = transactionManager.createTransaction(-777, accountList.get(0), accountList.get(1));
+        List<Transaction> transactionExpected = new ArrayList<>(Arrays.asList(transaction1, transaction2));
+        //verify
+        Assert.assertArrayEquals(transactionExpected.toArray(), transactionManager.findAllTransactionsByAccount(accountList.get(0)).toArray());
     }
 
     @Test
     public void rollbackTransaction() {
-        transaction1 = transactionManager.createTransaction(333, account1, account2);
-        transactionManager.executeTransaction(transaction1);
-        ArrayList<Transaction> transactions = (ArrayList<Transaction>) transactionManager.findAllTransactionsByAccount(account1);
-        transaction2 = transactions.get(transactions.size() - 1);
-        transactionManager.rollbackTransaction(transaction2);
-        Assert.assertEquals(3, transactionManager.findAllTransactionsByAccount(account1).size());
-        Assert.assertEquals(3, transactionManager.findAllTransactionsByAccount(account2).size());
-        Assert.assertEquals(333, account1.getEntries().last().getAmount(), 0.0001);
-        Assert.assertEquals(-333, account2.getEntries().last().getAmount(), 0.0001);
+        //given
+        TransactionManager transactionManager = prepareTransactionManager();
+        List<Account> accountList = prepareAccountList(transactionManager);
+        Transaction transaction = transactionManager.createTransaction(333, accountList.get(0), accountList.get(1));
+        transactionManager.executeTransaction(transaction);
+        List<Transaction> transactions = (ArrayList<Transaction>) transactionManager.findAllTransactionsByAccount(accountList.get(0));
+        Transaction executedTransaction = transactions.get(transactions.size() - 1);
+        //when
+        assumeTrue(accountList.get(0).getEntries().last().getAmount() == -333);
+        executedTransaction.rollback();
+        //verify
+        assertEquals(333, accountList.get(0).getEntries().last().getAmount(), 0.0001);
     }
 
     @Test
     public void executeTransaction() {
-        transaction1 = transactionManager.createTransaction(333, account1, account2);
+        //given
+        TransactionManager transactionManager = prepareTransactionManager();
+        List<Account> accountList = prepareAccountList(transactionManager);
+        Transaction transaction1 = transactionManager.createTransaction(333, accountList.get(0), accountList.get(1));
+        //when
         transactionManager.executeTransaction(transaction1);
-        ArrayList<Transaction> transactions = (ArrayList<Transaction>) transactionManager.findAllTransactionsByAccount(account1);
-        transaction2 = transactions.get(transactions.size() - 1);
-        Assert.assertEquals(2, transactionManager.findAllTransactionsByAccount(account1).size());
-        Assert.assertEquals(2, transactionManager.findAllTransactionsByAccount(account2).size());
-        Assert.assertEquals(-333, account1.getEntries().last().getAmount(), 0.0001);
-        Assert.assertEquals(333, account2.getEntries().last().getAmount(), 0.0001);
+        //verify
+        assertEquals(-333, accountList.get(0).getEntries().last().getAmount(), 0.0001);
+    }
+
+    private TransactionManager prepareTransactionManager() {
+        return new TransactionManager(new HashMap<>(), new ArrayList<>());
+    }
+
+    private List<Account> prepareAccountList(TransactionManager transactionManager) {
+        List<Account> accounts = new ArrayList<>();
+        accounts.add(new Account(1, transactionManager));
+        accounts.add(new Account(2, transactionManager));
+        return accounts;
     }
 }
