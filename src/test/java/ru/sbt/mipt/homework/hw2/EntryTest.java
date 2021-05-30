@@ -1,37 +1,27 @@
 package ru.sbt.mipt.homework.hw2;
 
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.Assume;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class EntryTest {
-    private TransactionManager transactionManager;
-    private Transaction transaction;
-    private Account account1;
-    private Account account2;
-
-    @Before
-    public void setUp() {
-        HashMap<Account, List<Transaction>> hashMap = new HashMap<>();
-        ArrayList<Transaction> transactions = new ArrayList<>();
-        transactionManager = new TransactionManager(hashMap, transactions);
-        account1 = new Account(1, transactionManager);
-        account2 = new Account(2, transactionManager);
-        transaction = transactionManager.createTransaction(333, account1, account2);
-    }
 
     @Test
     public void constructorOfEntryTest() {
+        //given
+        TransactionManager transactionManager = new TransactionManager(new HashMap<>(), new ArrayList<>());
+        Account account1 = new Account(1, transactionManager);
+        Account account2 = new Account(2, transactionManager);
+        Transaction transaction = transactionManager.createTransaction(333, account1, account2);
         LocalDateTime localDateTime = LocalDateTime.now();
+        //when
         Entry entry = new Entry(account1, transaction, transaction.getAmount(), localDateTime);
-        Assert.assertEquals(localDateTime, entry.getTime());
+        Assume.assumeTrue(localDateTime.equals(entry.getTime()));
+        //verify
         Assert.assertEquals(transaction.getAmount(), entry.getAmount(), 0.0001);
     }
-
-
 }
