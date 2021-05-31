@@ -60,7 +60,7 @@ public class EntriesTest {
         //when
         List<Entry> entriesList = (ArrayList<Entry>) entries.from(entryList.get(3).getTime().plusDays(30).toLocalDate());
         //verify
-        assertArrayEquals(Collections.EMPTY_LIST.toArray(), entriesList.toArray());
+        assertArrayEquals(Collections.emptyList().toArray(), entriesList.toArray());
     }
 
     @Test
@@ -145,7 +145,7 @@ public class EntriesTest {
         List<Entry> entriesList = (ArrayList<Entry>) entries.betweenDates(entryList.get(2).getTime().plusDays(1).toLocalDate(),
                 entryList.get(3).getTime().minusDays(1).toLocalDate());
         //verify
-        assertArrayEquals(Collections.EMPTY_LIST.toArray(), entriesList.toArray());
+        assertArrayEquals(Collections.emptyList().toArray(), entriesList.toArray());
     }
 
     @Test
@@ -224,7 +224,7 @@ public class EntriesTest {
 
     private List<Entry> prepareEntryList(List<Transaction> transactionList, List<Account> accountList) {
         List<Entry> entries = new ArrayList<>();
-        if (transactionList.size() > 3 && accountList.size() > 0) {
+        if (transactionList.size() > 3 && !accountList.isEmpty()) {
             entries.add(new Entry(accountList.get(0), transactionList.get(0), transactionList.get(0).getAmount(), LocalDateTime.now()));
             entries.add(new Entry(accountList.get(0), transactionList.get(1), transactionList.get(1).getAmount(), LocalDateTime.now().plusMinutes(1)));
             entries.add(new Entry(accountList.get(0), transactionList.get(2), transactionList.get(2).getAmount(), LocalDateTime.now().plusDays(5)));

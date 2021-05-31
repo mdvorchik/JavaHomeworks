@@ -17,9 +17,9 @@ public class AnalyticsManagerTest {
 
     /**
      * total count beneficiary by account1:
-     *      account2 - 4
-     *      account3 - 6
-     *      account4 - 7
+     * account2 - 4
+     * account3 - 6
+     * account4 - 7
      */
     @Test
     public void mostFrequentBeneficiaryOfAccount() {
