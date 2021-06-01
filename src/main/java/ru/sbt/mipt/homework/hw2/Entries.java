@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
  */
 public class Entries {
 
-    private final Map<LocalDate, List<Entry>> entriesMultiMap;
+    private final SortedMap<LocalDate, List<Entry>> entriesMultiMap;
 
-    public Entries(TreeMap<LocalDate, List<Entry>> entriesMultiMap) {
+    public Entries(SortedMap<LocalDate, List<Entry>> entriesMultiMap) {
         this.entriesMultiMap = entriesMultiMap;
     }
 
