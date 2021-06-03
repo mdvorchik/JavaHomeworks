@@ -1,6 +1,10 @@
 package ru.sbt.mipt.homework.hw3;
 
+import java.time.LocalDate;
 import java.util.*;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 public class AnalyticsManager {
     private final TransactionManager transactionManager;
@@ -12,7 +16,7 @@ public class AnalyticsManager {
     }
 
     public Account mostFrequentBeneficiaryOfAccount(Account debitCard) {
-        Integer max = 0;
+        int max = 0;
         Account mostFrequentBeneficiaryOfDebitCard = null;
         Map<Account, Integer> mapBeneficiaryToFrequency = new HashMap<>();
         Collection<Transaction> transactionCollection = transactionManager.findAllTransactionsByAccount(debitCard);
@@ -31,7 +35,27 @@ public class AnalyticsManager {
     public Collection<Transaction> topTenExpensivePurchases(DebitCard debitCard) {
         List<Transaction> transactionCollection = (ArrayList<Transaction>) transactionManager.findAllTransactionsByAccount(debitCard);
         transactionCollection.sort(transactionComparatorByAmount);
-        List<Transaction> topTenExpensivePurchases = new ArrayList<>(transactionCollection.subList(0, 10));
-        return topTenExpensivePurchases;
+        return new ArrayList<>(transactionCollection.subList(0, 10));
+    }
+
+    public double overallBalanceOfAccounts(List<Account> accounts) {
+        LocalDate localDate = LocalDate.now();
+        return accounts.stream()
+                .mapToDouble(account -> account.balanceOn(localDate))
+                .reduce(Double::sum)
+                .orElse(0);
+    }
+
+    public Set<Object> uniqueKeysOf(List<Account> accounts, KeyExtractor<Account> extractor) {
+        return accounts.stream()
+                .map(extractor::extract)
+                .collect(toSet());
+    }
+
+    public List<Account> accountsRangeFrom(List<Account> accounts, Account minAccount, Comparator<Account> comparator) {
+        return accounts.stream()
+                .sorted(comparator)
+                .filter(account -> comparator.compare(minAccount, account) <= 0)
+                .collect(toList());
     }
 }
