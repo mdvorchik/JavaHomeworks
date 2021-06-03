@@ -2,9 +2,9 @@ package ru.sbt.mipt.homework.hw3;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
 
 public class AnalyticsManager {
     private final TransactionManager transactionManager;
@@ -32,7 +32,7 @@ public class AnalyticsManager {
         return mostFrequentBeneficiaryOfDebitCard;
     }
 
-    public Collection<Transaction> topTenExpensivePurchases(DebitCard debitCard) {
+    public Collection<Transaction> topTenExpensivePurchases(Account debitCard) {
         List<Transaction> transactionCollection = (ArrayList<Transaction>) transactionManager.findAllTransactionsByAccount(debitCard);
         transactionCollection.sort(transactionComparatorByAmount);
         return new ArrayList<>(transactionCollection.subList(0, 10));
@@ -49,7 +49,8 @@ public class AnalyticsManager {
     public Set<Object> uniqueKeysOf(List<Account> accounts, KeyExtractor<Account> extractor) {
         return accounts.stream()
                 .map(extractor::extract)
-                .collect(toSet());
+                .sorted()
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public List<Account> accountsRangeFrom(List<Account> accounts, Account minAccount, Comparator<Account> comparator) {

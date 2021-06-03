@@ -62,7 +62,7 @@ public class SimpleEntitiesStorageTest {
         //when
         storage.saveAll(accounts);
         //verify
-        assertArrayEquals(accounts.toArray(), storage.findAll().toArray());
+        assertTrue(storage.findAll().containsAll(accounts));
     }
 
     @Test
@@ -83,8 +83,10 @@ public class SimpleEntitiesStorageTest {
         List<Account> accounts = prepareAccountList(transactionManager);
         SimpleEntitiesStorage<Account> storage = new SimpleEntitiesStorage<>(accountKeyExtractor);
         storage.saveAll(accounts);
+        //when
+        List<Account> foundList = storage.findAll();
         //verify
-        assertArrayEquals(accounts.toArray(), storage.findAll().toArray());
+        assertTrue(foundList.containsAll(accounts));
     }
 
     @Test
