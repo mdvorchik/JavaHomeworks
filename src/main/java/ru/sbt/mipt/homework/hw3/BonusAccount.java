@@ -15,8 +15,9 @@ public class BonusAccount implements Account {
 
     @Override
     public boolean withdraw(double amount, Account beneficiary) {
-        bonusScore += amount * bonusPercent;
-        return debitCard.withdraw(amount, beneficiary);
+        boolean result = debitCard.withdraw(amount, beneficiary);
+        if (result) bonusScore += amount * bonusPercent * 0.01;
+        return result;
     }
 
     @Override

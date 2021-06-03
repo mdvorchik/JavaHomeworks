@@ -1,5 +1,6 @@
 package ru.sbt.mipt.homework.hw3;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,7 @@ public class SimpleEntitiesStorage<E> implements BankEntitiesStorage<E> {
 
     @Override
     public List<E> findAll() {
-        return (List<E>) storage.values();
+        return new ArrayList<>(storage.values());
     }
 
     @Override
