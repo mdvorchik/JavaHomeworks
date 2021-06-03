@@ -12,7 +12,7 @@ public interface Account {
      * if amount &gt 0 and (currentBalance - amount) &ge 0,
      * otherwise returns false
      */
-    boolean withdraw(double amount, DebitCard beneficiary);
+    boolean withdraw(double amount, Account beneficiary);
 
     /**
      * Withdraws cash money from account. <b>Should use TransactionManager to manage transactions</b>

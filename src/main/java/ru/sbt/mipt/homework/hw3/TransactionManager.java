@@ -41,7 +41,7 @@ public class TransactionManager {
         return transaction;
     }
 
-    public Collection<Transaction> findAllTransactionsByAccount(DebitCard debitCard) {
+    public Collection<Transaction> findAllTransactionsByAccount(Account debitCard) {
         if (debitCard == null) throw new IllegalArgumentException();
         return this.transactionsByAccount.get(debitCard);
     }

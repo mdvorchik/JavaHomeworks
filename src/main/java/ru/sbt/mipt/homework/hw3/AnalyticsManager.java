@@ -11,10 +11,10 @@ public class AnalyticsManager {
         this.transactionManager = transactionManager;
     }
 
-    public DebitCard mostFrequentBeneficiaryOfAccount(DebitCard debitCard) {
+    public Account mostFrequentBeneficiaryOfAccount(Account debitCard) {
         Integer max = 0;
-        DebitCard mostFrequentBeneficiaryOfDebitCard = null;
-        Map<DebitCard, Integer> mapBeneficiaryToFrequency = new HashMap<>();
+        Account mostFrequentBeneficiaryOfDebitCard = null;
+        Map<Account, Integer> mapBeneficiaryToFrequency = new HashMap<>();
         Collection<Transaction> transactionCollection = transactionManager.findAllTransactionsByAccount(debitCard);
         for (Transaction transaction : transactionCollection) {
             mapBeneficiaryToFrequency.putIfAbsent(transaction.getBeneficiary(), 1);

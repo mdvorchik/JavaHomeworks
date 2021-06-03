@@ -27,7 +27,7 @@ public class DebitCard implements Account {
      * otherwise returns false
      */
     @Override
-    public boolean withdraw(double amount, DebitCard beneficiary) {
+    public boolean withdraw(double amount, Account beneficiary) {
         LocalDate localDate = LocalDate.now();
         if (amount > 0 && this.balanceOn(localDate) - amount >= 0) {
             Transaction transaction = transactionManager.createTransaction(amount, this, beneficiary);
