@@ -40,14 +40,13 @@ public class Transaction {
         LocalDateTime timeWhenTransactionExecuted = LocalDateTime.now();
         if (originator != null) {
             Entry entryOriginator = new Entry(originator, this, -amount, timeWhenTransactionExecuted);
-            originator.getEntries().addEntry(entryOriginator);
+            originator.addEntry(entryOriginator);
         }
         if (beneficiary != null) {
             Entry entryBeneficiary = new Entry(beneficiary, this, amount, timeWhenTransactionExecuted);
-            beneficiary.getEntries().addEntry(entryBeneficiary);
+            beneficiary.addEntry(entryBeneficiary);
         }
-        Transaction transaction = new Transaction(this.id, this.amount, this.originator, this.beneficiary, true, false);
-        return transaction;
+        return new Transaction(this.id, this.amount, this.originator, this.beneficiary, true, false);
     }
 
     /**
@@ -61,11 +60,11 @@ public class Transaction {
         LocalDateTime timeWhenTransactionExecuted = LocalDateTime.now();
         if (originator != null) {
             Entry entryOriginator = new Entry(originator, this, amount, timeWhenTransactionExecuted);
-            originator.getEntries().addEntry(entryOriginator);
+            originator.addEntry(entryOriginator);
         }
         if (beneficiary != null) {
             Entry entryBeneficiary = new Entry(beneficiary, this, -amount, timeWhenTransactionExecuted);
-            beneficiary.getEntries().addEntry(entryBeneficiary);
+            beneficiary.addEntry(entryBeneficiary);
         }
         transaction = new Transaction(this.id, this.amount, this.originator, this.beneficiary, true, true);
         return transaction;

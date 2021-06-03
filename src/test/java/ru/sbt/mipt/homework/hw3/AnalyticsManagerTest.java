@@ -26,20 +26,20 @@ public class AnalyticsManagerTest {
         //given
         TransactionManager transactionManager = prepareTransactionManager();
         AnalyticsManager analyticsManager = new AnalyticsManager(transactionManager);
-        List<Account> accountList = prepareAccountList(transactionManager);
-        fillAccountsByTrashTransactions(transactionManager, accountList);
-        prepareTopTenExpensivePurchases(transactionManager, accountList);
+        List<DebitCard> debitCardList = prepareAccountList(transactionManager);
+        fillAccountsByTrashTransactions(transactionManager, debitCardList);
+        prepareTopTenExpensivePurchases(transactionManager, debitCardList);
         //verify
-        assertEquals(accountList.get(3), analyticsManager.mostFrequentBeneficiaryOfAccount(accountList.get(0)));
+        assertEquals(debitCardList.get(3), analyticsManager.mostFrequentBeneficiaryOfAccount(debitCardList.get(0)));
     }
 
     @Test
     public void transactionComparatorByAmountTest() {
         //given
         TransactionManager transactionManager = prepareTransactionManager();
-        List<Account> accountList = prepareAccountList(transactionManager);
-        fillAccountsByTrashTransactions(transactionManager, accountList);
-        List<Transaction> transactionList = prepareTopTenExpensivePurchases(transactionManager, accountList);
+        List<DebitCard> debitCardList = prepareAccountList(transactionManager);
+        fillAccountsByTrashTransactions(transactionManager, debitCardList);
+        List<Transaction> transactionList = prepareTopTenExpensivePurchases(transactionManager, debitCardList);
         //verify
         assertEquals(transactionList.get(0).getAmount(), 1000000, 0.0001);
         assertEquals(transactionList.get(9).getAmount(), 7000, 0.0001);
@@ -50,51 +50,51 @@ public class AnalyticsManagerTest {
         //given
         TransactionManager transactionManager = prepareTransactionManager();
         AnalyticsManager analyticsManager = new AnalyticsManager(transactionManager);
-        List<Account> accountList = prepareAccountList(transactionManager);
-        fillAccountsByTrashTransactions(transactionManager, accountList);
-        List<Transaction> transactionList = prepareTopTenExpensivePurchases(transactionManager, accountList);
+        List<DebitCard> debitCardList = prepareAccountList(transactionManager);
+        fillAccountsByTrashTransactions(transactionManager, debitCardList);
+        List<Transaction> transactionList = prepareTopTenExpensivePurchases(transactionManager, debitCardList);
         //verify
-        assertArrayEquals(transactionList.toArray(), analyticsManager.topTenExpensivePurchases(accountList.get(0)).toArray());
+        assertArrayEquals(transactionList.toArray(), analyticsManager.topTenExpensivePurchases(debitCardList.get(0)).toArray());
     }
 
     private TransactionManager prepareTransactionManager() {
         return new TransactionManager(new HashMap<>(), new ArrayList<>());
     }
 
-    private List<Account> prepareAccountList(TransactionManager transactionManager) {
-        List<Account> accounts = new ArrayList<>();
-        accounts.add(new Account(1, transactionManager));
-        accounts.add(new Account(2, transactionManager));
-        accounts.add(new Account(3, transactionManager));
-        accounts.add(new Account(4, transactionManager));
-        return accounts;
+    private List<DebitCard> prepareAccountList(TransactionManager transactionManager) {
+        List<DebitCard> debitCards = new ArrayList<>();
+        debitCards.add(new DebitCard(1, transactionManager));
+        debitCards.add(new DebitCard(2, transactionManager));
+        debitCards.add(new DebitCard(3, transactionManager));
+        debitCards.add(new DebitCard(4, transactionManager));
+        return debitCards;
     }
 
-    private void fillAccountsByTrashTransactions(TransactionManager transactionManager, List<Account> accounts) {
-        if (accounts.size() > 3) {
-            transactionManager.createTransaction(1000, accounts.get(0), accounts.get(2));
-            transactionManager.createTransaction(200, accounts.get(0), accounts.get(3));
-            transactionManager.createTransaction(1700, accounts.get(0), accounts.get(2));
-            transactionManager.createTransaction(1050, accounts.get(0), accounts.get(2));
-            transactionManager.createTransaction(1300, accounts.get(0), accounts.get(3));
-            transactionManager.createTransaction(1700, accounts.get(0), accounts.get(2));
-            transactionManager.createTransaction(4000, accounts.get(0), accounts.get(1));
+    private void fillAccountsByTrashTransactions(TransactionManager transactionManager, List<DebitCard> debitCards) {
+        if (debitCards.size() > 3) {
+            transactionManager.createTransaction(1000, debitCards.get(0), debitCards.get(2));
+            transactionManager.createTransaction(200, debitCards.get(0), debitCards.get(3));
+            transactionManager.createTransaction(1700, debitCards.get(0), debitCards.get(2));
+            transactionManager.createTransaction(1050, debitCards.get(0), debitCards.get(2));
+            transactionManager.createTransaction(1300, debitCards.get(0), debitCards.get(3));
+            transactionManager.createTransaction(1700, debitCards.get(0), debitCards.get(2));
+            transactionManager.createTransaction(4000, debitCards.get(0), debitCards.get(1));
         }
     }
 
-    private List<Transaction> prepareTopTenExpensivePurchases(TransactionManager transactionManager, List<Account> accounts) {
+    private List<Transaction> prepareTopTenExpensivePurchases(TransactionManager transactionManager, List<DebitCard> debitCards) {
         List<Transaction> transactions = new ArrayList<>();
-        if (accounts.size() > 3) {
-            transactions.add(transactionManager.createTransaction(15000, accounts.get(0), accounts.get(2)));
-            transactions.add(transactionManager.createTransaction(20000, accounts.get(0), accounts.get(1)));
-            transactions.add(transactionManager.createTransaction(30000, accounts.get(0), accounts.get(3)));
-            transactions.add(transactionManager.createTransaction(30000, accounts.get(0), accounts.get(3)));
-            transactions.add(transactionManager.createTransaction(10000, accounts.get(0), accounts.get(3)));
-            transactions.add(transactionManager.createTransaction(9000, accounts.get(0), accounts.get(1)));
-            transactions.add(transactionManager.createTransaction(9000, accounts.get(0), accounts.get(2)));
-            transactions.add(transactionManager.createTransaction(7000, accounts.get(0), accounts.get(3)));
-            transactions.add(transactionManager.createTransaction(100000, accounts.get(0), accounts.get(1)));
-            transactions.add(transactionManager.createTransaction(1000000, accounts.get(0), accounts.get(3)));
+        if (debitCards.size() > 3) {
+            transactions.add(transactionManager.createTransaction(15000, debitCards.get(0), debitCards.get(2)));
+            transactions.add(transactionManager.createTransaction(20000, debitCards.get(0), debitCards.get(1)));
+            transactions.add(transactionManager.createTransaction(30000, debitCards.get(0), debitCards.get(3)));
+            transactions.add(transactionManager.createTransaction(30000, debitCards.get(0), debitCards.get(3)));
+            transactions.add(transactionManager.createTransaction(10000, debitCards.get(0), debitCards.get(3)));
+            transactions.add(transactionManager.createTransaction(9000, debitCards.get(0), debitCards.get(1)));
+            transactions.add(transactionManager.createTransaction(9000, debitCards.get(0), debitCards.get(2)));
+            transactions.add(transactionManager.createTransaction(7000, debitCards.get(0), debitCards.get(3)));
+            transactions.add(transactionManager.createTransaction(100000, debitCards.get(0), debitCards.get(1)));
+            transactions.add(transactionManager.createTransaction(1000000, debitCards.get(0), debitCards.get(3)));
             transactions.sort(transactionComparatorByAmount);
         }
         return transactions;

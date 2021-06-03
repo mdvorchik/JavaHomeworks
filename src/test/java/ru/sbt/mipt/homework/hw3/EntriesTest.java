@@ -204,40 +204,40 @@ public class EntriesTest {
         return new TransactionManager(new HashMap<>(), new ArrayList<>());
     }
 
-    private List<Account> prepareAccountList(TransactionManager transactionManager) {
-        List<Account> accounts = new ArrayList<>();
-        accounts.add(new Account(1, transactionManager));
-        accounts.add(new Account(2, transactionManager));
-        return accounts;
+    private List<DebitCard> prepareAccountList(TransactionManager transactionManager) {
+        List<DebitCard> debitCards = new ArrayList<>();
+        debitCards.add(new DebitCard(1, transactionManager));
+        debitCards.add(new DebitCard(2, transactionManager));
+        return debitCards;
     }
 
-    private List<Transaction> prepareTransactionList(TransactionManager transactionManager, List<Account> accounts) {
+    private List<Transaction> prepareTransactionList(TransactionManager transactionManager, List<DebitCard> debitCards) {
         List<Transaction> transactions = new ArrayList<>();
-        if (accounts.size() > 1) {
-            transactions.add(transactionManager.createTransaction(333, accounts.get(0), accounts.get(1)));
-            transactions.add(transactionManager.createTransaction(-777, accounts.get(0), accounts.get(1)));
-            transactions.add(transactionManager.createTransaction(-222, accounts.get(0), accounts.get(1)));
-            transactions.add(transactionManager.createTransaction(888, accounts.get(1), accounts.get(0)));
+        if (debitCards.size() > 1) {
+            transactions.add(transactionManager.createTransaction(333, debitCards.get(0), debitCards.get(1)));
+            transactions.add(transactionManager.createTransaction(-777, debitCards.get(0), debitCards.get(1)));
+            transactions.add(transactionManager.createTransaction(-222, debitCards.get(0), debitCards.get(1)));
+            transactions.add(transactionManager.createTransaction(888, debitCards.get(1), debitCards.get(0)));
         }
         return transactions;
     }
 
-    private List<Entry> prepareEntryList(List<Transaction> transactionList, List<Account> accountList) {
+    private List<Entry> prepareEntryList(List<Transaction> transactionList, List<DebitCard> debitCardList) {
         List<Entry> entries = new ArrayList<>();
-        if (transactionList.size() > 3 && !accountList.isEmpty()) {
-            entries.add(new Entry(accountList.get(0), transactionList.get(0), transactionList.get(0).getAmount(), LocalDateTime.now()));
-            entries.add(new Entry(accountList.get(0), transactionList.get(1), transactionList.get(1).getAmount(), LocalDateTime.now().plusMinutes(1)));
-            entries.add(new Entry(accountList.get(0), transactionList.get(2), transactionList.get(2).getAmount(), LocalDateTime.now().plusDays(5)));
-            entries.add(new Entry(accountList.get(0), transactionList.get(3), transactionList.get(3).getAmount(), LocalDateTime.now().plusDays(15)));
+        if (transactionList.size() > 3 && !debitCardList.isEmpty()) {
+            entries.add(new Entry(debitCardList.get(0), transactionList.get(0), transactionList.get(0).getAmount(), LocalDateTime.now()));
+            entries.add(new Entry(debitCardList.get(0), transactionList.get(1), transactionList.get(1).getAmount(), LocalDateTime.now().plusMinutes(1)));
+            entries.add(new Entry(debitCardList.get(0), transactionList.get(2), transactionList.get(2).getAmount(), LocalDateTime.now().plusDays(5)));
+            entries.add(new Entry(debitCardList.get(0), transactionList.get(3), transactionList.get(3).getAmount(), LocalDateTime.now().plusDays(15)));
         }
         return entries;
     }
 
     private List<Entry> setUpEntryList() {
         TransactionManager transactionManager = prepareTransactionManager();
-        List<Account> accountList = prepareAccountList(transactionManager);
-        List<Transaction> transactionList = prepareTransactionList(transactionManager, accountList);
-        return prepareEntryList(transactionList, accountList);
+        List<DebitCard> debitCardList = prepareAccountList(transactionManager);
+        List<Transaction> transactionList = prepareTransactionList(transactionManager, debitCardList);
+        return prepareEntryList(transactionList, debitCardList);
     }
 
     private void fillEntries(Entries entries, List<Entry> entryList) {

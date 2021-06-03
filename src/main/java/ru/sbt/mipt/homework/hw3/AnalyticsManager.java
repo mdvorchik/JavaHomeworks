@@ -11,25 +11,25 @@ public class AnalyticsManager {
         this.transactionManager = transactionManager;
     }
 
-    public Account mostFrequentBeneficiaryOfAccount(Account account) {
+    public DebitCard mostFrequentBeneficiaryOfAccount(DebitCard debitCard) {
         Integer max = 0;
-        Account mostFrequentBeneficiaryOfAccount = null;
-        Map<Account, Integer> mapBeneficiaryToFrequency = new HashMap<>();
-        Collection<Transaction> transactionCollection = transactionManager.findAllTransactionsByAccount(account);
-        for (Transaction transaction: transactionCollection) {
+        DebitCard mostFrequentBeneficiaryOfDebitCard = null;
+        Map<DebitCard, Integer> mapBeneficiaryToFrequency = new HashMap<>();
+        Collection<Transaction> transactionCollection = transactionManager.findAllTransactionsByAccount(debitCard);
+        for (Transaction transaction : transactionCollection) {
             mapBeneficiaryToFrequency.putIfAbsent(transaction.getBeneficiary(), 1);
             Integer tempInteger = mapBeneficiaryToFrequency.computeIfPresent(transaction.getBeneficiary(),
                     (key, value) -> value + 1);
             if (max < tempInteger) {
                 max = tempInteger;
-                mostFrequentBeneficiaryOfAccount = transaction.getBeneficiary();
+                mostFrequentBeneficiaryOfDebitCard = transaction.getBeneficiary();
             }
         }
-        return mostFrequentBeneficiaryOfAccount;
+        return mostFrequentBeneficiaryOfDebitCard;
     }
 
-    public Collection<Transaction> topTenExpensivePurchases(Account account) {
-        List<Transaction> transactionCollection = (ArrayList<Transaction>) transactionManager.findAllTransactionsByAccount(account);
+    public Collection<Transaction> topTenExpensivePurchases(DebitCard debitCard) {
+        List<Transaction> transactionCollection = (ArrayList<Transaction>) transactionManager.findAllTransactionsByAccount(debitCard);
         transactionCollection.sort(transactionComparatorByAmount);
         List<Transaction> topTenExpensivePurchases = new ArrayList<>(transactionCollection.subList(0, 10));
         return topTenExpensivePurchases;

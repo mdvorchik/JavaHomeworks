@@ -4,14 +4,14 @@ import java.util.*;
 
 public class TransactionManager {
     private final Map<Account, List<Transaction>> transactionsByAccount;
-    private final ArrayList<Transaction> transactions;
+    private final List<Transaction> transactions;
 
-    private void addTransactionToAccount(Transaction transaction, Account account) {
-        transactionsByAccount.computeIfPresent(account, (key, value) -> {
+    private void addTransactionToAccount(Transaction transaction, Account debitCard) {
+        transactionsByAccount.computeIfPresent(debitCard, (key, value) -> {
             value.add(transaction);
             return value;
         });
-        transactionsByAccount.putIfAbsent(account, new ArrayList<>(Collections.singletonList(transaction)));
+        transactionsByAccount.putIfAbsent(debitCard, new ArrayList<>(Collections.singletonList(transaction)));
     }
 
     private void addTransactionToAllPlaces(Transaction transaction, Account originator, Account beneficiary) {
@@ -20,7 +20,7 @@ public class TransactionManager {
         if (beneficiary != null) addTransactionToAccount(transaction, beneficiary);
     }
 
-    public TransactionManager(HashMap<Account, List<Transaction>> transactionsByAccountMap, ArrayList<Transaction> transactions) {
+    public TransactionManager(Map<Account, List<Transaction>> transactionsByAccountMap, List<Transaction> transactions) {
         this.transactionsByAccount = transactionsByAccountMap;
         this.transactions = transactions;
     }
@@ -41,9 +41,9 @@ public class TransactionManager {
         return transaction;
     }
 
-    public Collection<Transaction> findAllTransactionsByAccount(Account account) {
-        if (account == null) throw new IllegalArgumentException();
-        return this.transactionsByAccount.get(account);
+    public Collection<Transaction> findAllTransactionsByAccount(DebitCard debitCard) {
+        if (debitCard == null) throw new IllegalArgumentException();
+        return this.transactionsByAccount.get(debitCard);
     }
 
     public void rollbackTransaction(Transaction transaction) {

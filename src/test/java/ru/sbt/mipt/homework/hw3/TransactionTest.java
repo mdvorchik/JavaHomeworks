@@ -15,8 +15,8 @@ public class TransactionTest {
     public void executeWithIllegalStateExceptionWhenExecuteTransactionTwice() {
         //given
         TransactionManager transactionManager = prepareTransactionManager();
-        List<Account> accountList = prepareAccountList(transactionManager);
-        List<Transaction> transactionList = prepareTransactionList(transactionManager, accountList);
+        List<DebitCard> debitCardList = prepareAccountList(transactionManager);
+        List<Transaction> transactionList = prepareTransactionList(transactionManager, debitCardList);
         //verify
         assertThrows(IllegalStateException.class, () -> transactionList.get(0).execute().execute());
     }
@@ -25,21 +25,21 @@ public class TransactionTest {
     public void executeWorkByAmount() {
         //given
         TransactionManager transactionManager = prepareTransactionManager();
-        List<Account> accountList = prepareAccountList(transactionManager);
-        List<Transaction> transactionList = prepareTransactionList(transactionManager, accountList);
+        List<DebitCard> debitCardList = prepareAccountList(transactionManager);
+        List<Transaction> transactionList = prepareTransactionList(transactionManager, debitCardList);
         //when
         transactionList.get(0).execute();
         //verify
-        assertEquals(-333, accountList.get(0).getEntries().last().getAmount(), 0.0001);
-        assertEquals(333, accountList.get(1).getEntries().last().getAmount(), 0.0001);
+        assertEquals(-333, debitCardList.get(0).getEntries().last().getAmount(), 0.0001);
+        assertEquals(333, debitCardList.get(1).getEntries().last().getAmount(), 0.0001);
     }
 
     @Test
     public void rollbackWithExceptionWhenRollbackTwice() {
         //given
         TransactionManager transactionManager = prepareTransactionManager();
-        List<Account> accountList = prepareAccountList(transactionManager);
-        List<Transaction> transactionList = prepareTransactionList(transactionManager, accountList);
+        List<DebitCard> debitCardList = prepareAccountList(transactionManager);
+        List<Transaction> transactionList = prepareTransactionList(transactionManager, debitCardList);
         //verify
         assertThrows(IllegalStateException.class, () -> transactionList.get(0).execute().rollback().rollback());
     }
@@ -48,8 +48,8 @@ public class TransactionTest {
     public void rollbackWithExceptionTransactionDoesNotExecutedYet() {
         //given
         TransactionManager transactionManager = prepareTransactionManager();
-        List<Account> accountList = prepareAccountList(transactionManager);
-        List<Transaction> transactionList = prepareTransactionList(transactionManager, accountList);
+        List<DebitCard> debitCardList = prepareAccountList(transactionManager);
+        List<Transaction> transactionList = prepareTransactionList(transactionManager, debitCardList);
         //verify
         assertThrows(IllegalStateException.class, () -> transactionList.get(0).rollback());
     }
@@ -58,32 +58,32 @@ public class TransactionTest {
     public void rollbackWorkByAmount() {
         //given
         TransactionManager transactionManager = prepareTransactionManager();
-        List<Account> accountList = prepareAccountList(transactionManager);
-        List<Transaction> transactionList = prepareTransactionList(transactionManager, accountList);
+        List<DebitCard> debitCardList = prepareAccountList(transactionManager);
+        List<Transaction> transactionList = prepareTransactionList(transactionManager, debitCardList);
         //when
         transactionList.get(0).execute().rollback();
         //verify
-        assertEquals(333, accountList.get(0).getEntries().last().getAmount(), 0.0001);
-        assertEquals(-333, accountList.get(1).getEntries().last().getAmount(), 0.0001);
+        assertEquals(333, debitCardList.get(0).getEntries().last().getAmount(), 0.0001);
+        assertEquals(-333, debitCardList.get(1).getEntries().last().getAmount(), 0.0001);
     }
 
     private TransactionManager prepareTransactionManager() {
         return new TransactionManager(new HashMap<>(), new ArrayList<>());
     }
 
-    private List<Account> prepareAccountList(TransactionManager transactionManager) {
-        List<Account> accounts = new ArrayList<>();
-        accounts.add(new Account(1, transactionManager));
-        accounts.add(new Account(2, transactionManager));
-        return accounts;
+    private List<DebitCard> prepareAccountList(TransactionManager transactionManager) {
+        List<DebitCard> debitCards = new ArrayList<>();
+        debitCards.add(new DebitCard(1, transactionManager));
+        debitCards.add(new DebitCard(2, transactionManager));
+        return debitCards;
     }
 
-    private List<Transaction> prepareTransactionList(TransactionManager transactionManager, List<Account> accounts) {
+    private List<Transaction> prepareTransactionList(TransactionManager transactionManager, List<DebitCard> debitCards) {
         List<Transaction> transactions = new ArrayList<>();
-        if (accounts.size() > 1) {
-            transactions.add(transactionManager.createTransaction(333, accounts.get(0), accounts.get(1)));
-            transactions.add(transactionManager.createTransaction(-777, accounts.get(0), accounts.get(1)));
-            transactions.add(transactionManager.createTransaction(-222, accounts.get(0), accounts.get(1)));
+        if (debitCards.size() > 1) {
+            transactions.add(transactionManager.createTransaction(333, debitCards.get(0), debitCards.get(1)));
+            transactions.add(transactionManager.createTransaction(-777, debitCards.get(0), debitCards.get(1)));
+            transactions.add(transactionManager.createTransaction(-222, debitCards.get(0), debitCards.get(1)));
         }
         return transactions;
     }
