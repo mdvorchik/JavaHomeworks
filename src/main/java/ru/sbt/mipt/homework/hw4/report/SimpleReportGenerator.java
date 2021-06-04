@@ -5,20 +5,23 @@ import java.util.*;
 
 public class SimpleReportGenerator<T> implements ReportGenerator<T> {
     private final Class<T> clazz;
+    private final Map<String, String> classFieldNameToUserFieldName;
 
-    public SimpleReportGenerator(Class<T> clazz) {
+    public SimpleReportGenerator(Class<T> clazz, Map<String, String> classFieldNameToUserFieldName) {
         this.clazz = clazz;
+        this.classFieldNameToUserFieldName = classFieldNameToUserFieldName;
     }
 
     @Override
     public Report generate(List<T> entities) {
-        SortedSet<Map<String, String>> rowReport = new TreeSet<>();
+        List<Map<String, String>> rowReport = new ArrayList<>();
         List<Field> fields = extractFieldsFromClass();
         entities.forEach((entity) -> {
             Map<String, String> fieldNameToValueMap = new LinkedHashMap<>();
             fields.forEach((field) -> {
                 try {
-                    fieldNameToValueMap.put(field.getName(), (String) field.get(entity));
+                    fieldNameToValueMap.put(classFieldNameToUserFieldName.getOrDefault(field.getName(), field.getName()),
+                            String.valueOf(field.get(entity)));
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
