@@ -59,4 +59,17 @@ public class AnalyticsManager {
                 .filter(account -> comparator.compare(minAccount, account) <= 0)
                 .collect(toList());
     }
+
+    public Optional<Entry> maxExpenseAmountEntryWithinInterval(List<Account> accounts, LocalDate from, LocalDate to) {
+        return accounts.stream()
+                .map(account -> account.history(from, to))
+                .reduce((list1, list2) -> {
+                    list1.addAll(list2);
+                    return list1;
+                })
+                .get()
+                .stream()
+                .filter(entry -> entry.getAmount() < 0)
+                .max((o1, o2) -> Double.compare(o2.getAmount(), o1.getAmount()));
+    }
 }

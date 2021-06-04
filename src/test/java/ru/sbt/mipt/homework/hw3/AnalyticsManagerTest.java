@@ -97,6 +97,21 @@ public class AnalyticsManagerTest {
                 analyticsManager.accountsRangeFrom(debitCardList, debitCardList.get(2), accountComparator).toArray());
     }
 
+    @Test
+    public void maxExpenseAmountEntryWithinInterval() {
+        //given
+        TransactionManager transactionManager = prepareTransactionManager();
+        AnalyticsManager analyticsManager = new AnalyticsManager(transactionManager);
+        List<Account> debitCardList = prepareAccountList(transactionManager);
+        List<Transaction> transactions = prepareTopTenExpensivePurchases(transactionManager, debitCardList);
+        debitCardList.forEach(account -> account.addCash(100000000));
+        transactions.forEach(Transaction::execute);
+        //verify
+        assertEquals(-1000000,
+                analyticsManager.maxExpenseAmountEntryWithinInterval(debitCardList, LocalDate.now().minusWeeks(1), LocalDate.now().plusWeeks(1)).get().getAmount(),
+                0.0001);
+    }
+
     private TransactionManager prepareTransactionManager() {
         return new TransactionManager(new HashMap<>(), new ArrayList<>());
     }
