@@ -1,11 +1,13 @@
 package ru.sbt.mipt.homework.hw4.report;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.*;
 
 public class SimpleReportGenerator<T> implements ReportGenerator<T> {
     private final Class<T> clazz;
     private final Map<String, String> classFieldNameToUserFieldName;
+    private File file;
 
     public SimpleReportGenerator(Class<T> clazz, Map<String, String> classFieldNameToUserFieldName) {
         this.clazz = clazz;
@@ -28,7 +30,11 @@ public class SimpleReportGenerator<T> implements ReportGenerator<T> {
             });
             rowReport.add(fieldNameToValueMap);
         });
-        return new ConsoleReport(clazz.getSimpleName(), rowReport);
+        return new ExcelReport(clazz.getSimpleName(), rowReport, file);
+    }
+
+    public void setFile(File file) {
+        this.file = file;
     }
 
     private List<Field> extractFieldsFromClass() {
