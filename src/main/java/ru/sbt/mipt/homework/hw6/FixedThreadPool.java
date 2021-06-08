@@ -1,11 +1,13 @@
 package ru.sbt.mipt.homework.hw6;
 
-import java.util.PriorityQueue;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
 
 public class FixedThreadPool implements ThreadPool {
-    private final Queue<Runnable> taskList = new PriorityQueue<>();
-    private final Queue<ThreadConsumer> threadList = new PriorityQueue<>();
+    private final Queue<Runnable> taskList = new ArrayDeque<>();
+    private final List<ThreadConsumer> threadList = new ArrayList<>();
 
     public FixedThreadPool(int threadsCount) {
         for (int i = 0; i < threadsCount; ++i) {
@@ -27,7 +29,7 @@ public class FixedThreadPool implements ThreadPool {
     public void execute(Runnable runnable) {
         synchronized (taskList) {
             taskList.add(runnable);
-            threadList.notify();
+            taskList.notify();
         }
     }
 
