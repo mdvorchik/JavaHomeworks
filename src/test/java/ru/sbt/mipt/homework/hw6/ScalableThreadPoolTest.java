@@ -6,14 +6,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertEquals;
 
-public class FixedThreadPoolTest {
+public class ScalableThreadPoolTest {
     static AtomicInteger finishedThreadCount = new AtomicInteger(0);
 
     @Test
     public void execute() throws InterruptedException {
         //given
         int availableProcessorsCount = Runtime.getRuntime().availableProcessors();
-        FixedThreadPool threadPool = new FixedThreadPool(availableProcessorsCount);
+        ScalableThreadPool threadPool = new ScalableThreadPool(availableProcessorsCount / 2, availableProcessorsCount);
         Runnable task = () -> {
             try {
                 Thread.sleep(1000);
