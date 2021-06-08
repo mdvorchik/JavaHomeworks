@@ -1,4 +1,4 @@
-package ru.sbt.mipt.homework.hw3;
+package ru.sbt.mipt.homework.hw5;
 
 import org.junit.Test;
 
