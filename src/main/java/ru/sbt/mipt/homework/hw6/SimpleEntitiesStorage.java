@@ -1,4 +1,4 @@
-package ru.sbt.mipt.homework.hw5;
+package ru.sbt.mipt.homework.hw6;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package ru.sbt.mipt.homework.hw5;
+package ru.sbt.mipt.homework.hw6;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
